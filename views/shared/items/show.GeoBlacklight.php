@@ -232,5 +232,5 @@ $references = array(
 "georss_box_s": <?php echo(json_encode($geoRSSBox)); ?>,
 "georss_polygon_s": <?php echo(json_encode($geoRSSPolygon)); ?>,
 "solr_geom": <?php echo(json_encode($solrBBox)); ?>,
-"solr_year_i": <?php echo(json_encode($solrYear)); ?>
+"solr_year_i": <?php echo(json_encode(intval($solrYear))); ?>
 }
