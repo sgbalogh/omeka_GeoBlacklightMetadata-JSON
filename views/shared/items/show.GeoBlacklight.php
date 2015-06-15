@@ -1,5 +1,18 @@
 <?php /* REQUIRES PHP 5.2 OR LATER, on account of json_encode() function. */ ?>
 <?php
+
+function deriveSlug ($string) {
+	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $string);
+	$flatten = preg_replace('/\s+/', '', $clean);
+	return $flatten;
+	};
+
+
+/* system variables */
+$GeoServerWS = "nyu_sdr";
+
+/* metadata variables */
+
 $item = get_current_record('item');
 
 $identifier = metadata($item, array('Dublin Core', 'Identifier'), array('all'=>true, 'no_escape'=>true));
@@ -31,10 +44,6 @@ $solrGeom = metadata($item, array('GeoBlacklight', 'Apache Solr Geometry'), arra
 $solrBBox = metadata($item, array('GeoBlacklight', 'Apache Solr Bounding Box'), array('all'=>true, 'no_escape'=>true));
 $solrYear = metadata($item, array('GeoBlacklight', 'Apache Solr Year'), array('all'=>true, 'no_escape'=>true));
 
-function deriveSlug ($string) {
-	$product = preg_replace('/\s+/', '', $string);
-	return $product;
-	};
 	
 
 
@@ -150,6 +159,52 @@ if (count($solrYear) == 1) {
 	$solrYear = $solrYear[0];
 };
 
+if ($slug[0] == "OVERRIDE") {
+	$slug = $slug[1];
+} else {
+	$slug = deriveSlug($title);
+};
+
+if ($layerID[0] == "OVERRIDE") {
+	$layerID = $layerID[1];
+} else {
+	$layerID = $GeoServerWS.":".deriveSlug($title);
+};
+
+if ($identifier[0] == "OVERRIDE") {
+	$identifier = $identifier[1];
+	} else {
+	$identifier = $UUID;
+	};
+	
+/* references logic */
+$UUIDNetPos = strpos($UUID, ".net/");
+$UUIDNumBegin = $UUIDNetPos + 5;
+$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
+$repoFileNum = "2";
+
+$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
+$geoserverPublic = "http://geoserver.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+$geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+
+if ($rights == "Public") {
+	$WFS = $geoserverPublic."wfs";
+	$WMS = $geoserverPublic."wms";
+	} elseif ($rights == "Private") {
+	$WFS = $geoserverPrivate."wfs";
+	$WMS = $geoserverPrivate."wms";
+	} else {
+	$WFS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";
+	$WMS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";
+	};
+
+$references = array(
+"http://schema.org/url" => $UUID,
+"http://schema.org/downloadUrl" => $downloadURL,
+"http://www.opengis.net/def/serviceType/ogc/wfs" => $WFS,
+"http://www.opengis.net/def/serviceType/ogc/wms" => $WMS,
+);
+
 ?>
 {
 "uuid": <?php echo(json_encode($UUID)); ?>,
@@ -177,7 +232,5 @@ if (count($solrYear) == 1) {
 "georss_box_s": <?php echo(json_encode($geoRSSBox)); ?>,
 "georss_polygon_s": <?php echo(json_encode($geoRSSPolygon)); ?>,
 "solr_geom": <?php echo(json_encode($solrBBox)); ?>,
-"solr_year_i": <?php echo(json_encode($solrYear)); ?>,
-"derivedSlug": <?php echo(json_encode(deriveSlug($title))); ?>
-
- }
+"solr_year_i": <?php echo(json_encode($solrYear)); ?>
+}
