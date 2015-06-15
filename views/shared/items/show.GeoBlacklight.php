@@ -222,6 +222,8 @@ $geoRSSBox = $S." ".$W." ".$N." ".$E;
 $geoRSSPolygon = $S." ".$W." ".$N." ".$W." ".$N." ".$E." ".$S." ".$E." ".$S." ".$W;
 $solrGeom = "ENVELOPE(".$W.", ".$E.", ".$N.", ".$S.")";
 
+$CDT = getdate();
+$layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].":".$CDT['minutes'].":".$CDT['seconds']."Z";
 
 ?>
 {
