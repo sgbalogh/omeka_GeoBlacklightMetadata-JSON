@@ -41,7 +41,6 @@ $geoRSSBox = metadata($item, array('GeoBlacklight', 'GeoRSS Box'), array('all'=>
 $geoRSSPoint = metadata($item, array('GeoBlacklight', 'GeoRSS Point'), array('all'=>true, 'no_escape'=>true));
 $geoRSSPolygon = metadata($item, array('GeoBlacklight', 'GeoRSS Polygon'), array('all'=>true, 'no_escape'=>true));
 $solrGeom = metadata($item, array('GeoBlacklight', 'Apache Solr Geometry'), array('all'=>true, 'no_escape'=>true));
-$solrBBox = metadata($item, array('GeoBlacklight', 'Apache Solr Bounding Box'), array('all'=>true, 'no_escape'=>true));
 $solrYear = metadata($item, array('GeoBlacklight', 'Apache Solr Year'), array('all'=>true, 'no_escape'=>true));
 
 	
@@ -151,10 +150,6 @@ if (count($solrGeom) == 1) {
 	$solrGeom = $solrGeom[0];
 };
 
-if (count($solrBBox) == 1) {
-	$solrBBox = $solrBBox[0];
-};
-
 if (count($solrYear) == 1) {
 	$solrYear = $solrYear[0];
 };
@@ -205,6 +200,29 @@ $references = array(
 "http://www.opengis.net/def/serviceType/ogc/wms" => $WMS,
 );
 
+/* polygon parser logic */
+
+/* sample: -125.5339570045,32.7232795799,-113.9665679932,37.6842844962 as W S E N */
+
+
+$posCom1 = strpos($geoRSSBox, ",");
+$posCom2 = strpos($geoRSSBox, ",", $posCom1+1);
+$posCom3 = strpos($geoRSSBox, ",", $posCom2+1);
+
+$Slen = $posCom2 - $posCom1 - 1;
+$Elen = $posCom3 - $posCom2 - 1;
+$Nlen = strlen($geoRSSBox) - $posCom3 - 1;
+
+$W = substr($geoRSSBox, 0, $posCom1);
+$S = substr($geoRSSBox, $posCom1+1, $Slen);
+$E = substr($geoRSSBox, $posCom2+1, $Elen);
+$N = substr($geoRSSBox, $posCom3+1, $Nlen);
+
+$geoRSSBox = $S." ".$W." ".$N." ".$E;
+$geoRSSPolygon = $S." ".$W." ".$N." ".$W." ".$N." ".$E." ".$S." ".$E." ".$S." ".$W;
+$solrGeom = "ENVELOPE(".$W.", ".$E.", ".$N.", ".$S.")";
+
+
 ?>
 {
 "uuid": <?php echo(json_encode($UUID)); ?>,
@@ -231,6 +249,6 @@ $references = array(
 "dc_relation_sm": <?php echo(json_encode($relation)); ?>,
 "georss_box_s": <?php echo(json_encode($geoRSSBox)); ?>,
 "georss_polygon_s": <?php echo(json_encode($geoRSSPolygon)); ?>,
-"solr_geom": <?php echo(json_encode($solrBBox)); ?>,
+"solr_geom": <?php echo(json_encode($solrGeom)); ?>,
 "solr_year_i": <?php echo(json_encode(intval($solrYear))); ?>
 }
