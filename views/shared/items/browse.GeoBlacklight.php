@@ -1,5 +1,6 @@
 <?php /* REQUIRES PHP 5.2 OR LATER, on account of json_encode() function. */ ?>
 <?php 
+include 'location_DB.php';
 function deriveSlug ($string) {
     $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
     $lessjunk = str_replace($junkWords, '', $string);
@@ -296,10 +297,19 @@ $references = array(
 
 $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/downloadUrl\":\"".$downloadURL."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
 
-/* polygon parser logic */
+/*  polygon parser logic
+ 	sample: -125.5339570045,32.7232795799,-113.9665679932,37.6842844962 as W S E N 
+*/
 
-/* sample: -125.5339570045,32.7232795799,-113.9665679932,37.6842844962 as W S E N */
-
+		/* location database search */
+$numlocs = count($locDB);
+for ($x = 0; $x < $numlocs; $x++) {
+	$opLoc = $locDB[$x]['location'];
+	$opBBOX = $locDB[$x]['bbox'];
+		if ($geoRSSBox == $opLoc) {
+				$geoRSSBox = $locDB[$x]['bbox'];
+		};
+};
 
 $posCom1 = strpos($geoRSSBox, ",");
 $posCom2 = strpos($geoRSSBox, ",", $posCom1+1);
@@ -319,6 +329,7 @@ $geoRSSPolygon = $S." ".$W." ".$N." ".$W." ".$N." ".$E." ".$S." ".$E." ".$S." ".
 $solrGeom = "ENVELOPE(".$W.", ".$E.", ".$N.", ".$S.")";
 
 /* date parsing */
+
 $CDT = getdate();
 $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].":".$CDT['minutes'].":".$CDT['seconds']."Z";
 
