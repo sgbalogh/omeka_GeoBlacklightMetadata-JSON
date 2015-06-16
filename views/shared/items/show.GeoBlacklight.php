@@ -193,12 +193,14 @@ if ($rights == "Public") {
 	$WMS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";
 	};
 
-$references = array(
+/*$references = array(
 "http://schema.org/url" => $UUID,
 "http://schema.org/downloadUrl" => $downloadURL,
 "http://www.opengis.net/def/serviceType/ogc/wfs" => $WFS,
 "http://www.opengis.net/def/serviceType/ogc/wms" => $WMS,
-);
+);*/
+
+$references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/downloadUrl\":\"".$downloadURL."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
 
 /* polygon parser logic */
 
@@ -222,6 +224,7 @@ $geoRSSBox = $S." ".$W." ".$N." ".$E;
 $geoRSSPolygon = $S." ".$W." ".$N." ".$W." ".$N." ".$E." ".$S." ".$E." ".$S." ".$W;
 $solrGeom = "ENVELOPE(".$W.", ".$E.", ".$N.", ".$S.")";
 
+/* date parsing */
 $CDT = getdate();
 $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].":".$CDT['minutes'].":".$CDT['seconds']."Z";
 
@@ -233,7 +236,7 @@ $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].
 "dc_description_s": <?php echo(json_encode($description)); ?>,
 "dc_rights_s": <?php echo(json_encode($rights)); ?>,
 "dct_provenance_s": <?php echo(json_encode($provenance)); ?>,
-"dct_references_s": <?php echo(json_encode($references)); ?>,
+"dct_references_s": <?php echo(json_encode($references, JSON_UNESCAPED_SLASHES)); ?>,
 "layer_id_s": <?php echo(json_encode($layerID)); ?>,
 "layer_slug_s": <?php echo(json_encode($slug)); ?>,
 "layer_geom_type_s": <?php echo(json_encode($geomType)); ?>,
