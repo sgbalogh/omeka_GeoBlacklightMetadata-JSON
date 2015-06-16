@@ -1,5 +1,6 @@
 <?php /* REQUIRES PHP 5.2 OR LATER, on account of json_encode() function. */ ?>
 <?php
+include 'location_DB.php';
 
 function deriveSlug ($string) {
     $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
@@ -278,6 +279,16 @@ $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/down
 /* polygon parser logic */
 
 /* sample: -125.5339570045,32.7232795799,-113.9665679932,37.6842844962 as W S E N */
+
+$numlocs = count($locDB);
+
+for ($x = 0; $x < $numlocs; $x++) {
+	$opLoc = $locDB[$x]['location'];
+	$opBBOX = $locDB[$x]['bbox'];
+		if ($geoRSSBox == $opLoc) {
+				$geoRSSBox = $locDB[$x]['bbox'];
+			};
+	};
 
 
 $posCom1 = strpos($geoRSSBox, ",");
