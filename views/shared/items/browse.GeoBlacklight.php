@@ -1,10 +1,10 @@
 <?php /* REQUIRES PHP 5.2 OR LATER, on account of json_encode() function. */ ?>
 <?php 
 function deriveSlug ($string) {
-    $junkWords = array(" for "," in "," on "," the "," a "," an "," use ", "with");
-	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $string);
-    $lessjunk = str_replace($junkWords, '', $clean);
-	$flatten = preg_replace('/\s+/', '', $lessjunk);
+    $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
+    $lessjunk = str_replace($junkWords, '', $string);
+	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $lessjunk);
+	$flatten = preg_replace('/\s+/', '', $clean);
 	return $flatten;
 	};
 
@@ -271,8 +271,8 @@ if ($rights == "Public") {
 	$WFS = $geoserverPublic."wfs";
 	$WMS = $geoserverPublic."wms";
 	} elseif ($rights == "Private") {
-	$WFS = $geoserverPrivate."wfs";
-	$WMS = $geoserverPrivate."wms";
+	$WFS = $geoserverRestricted."wfs";
+	$WMS = $geoserverRestricted."wms";
 	} else {
 	$WFS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";
 	$WMS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";

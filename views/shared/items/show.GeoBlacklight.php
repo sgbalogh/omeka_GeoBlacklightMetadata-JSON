@@ -2,7 +2,9 @@
 <?php
 
 function deriveSlug ($string) {
-	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $string);
+    $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
+    $lessjunk = str_replace($junkWords, '', $string);
+	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $lessjunk);
 	$flatten = preg_replace('/\s+/', '', $clean);
 	return $flatten;
 	};
@@ -47,131 +49,199 @@ $solrYear = metadata($item, array('GeoBlacklight', 'Apache Solr Year'), array('a
 
 
 if (count($identifier) == 1) {
-	$identifier = $spatialCoverage[0];
-};
+	$identifier = $identifier[0];
+} elseif (count($identifier) == 0) {
+	$identifier = "";
+	};
 
 if (count($title) == 1) {
 	$title = $title[0];
-};
+} elseif (count($title) == 0) {
+	$title = "MISSING TITLE";
+	};
 
 if (count($description) == 1) {
 	$description = $description[0];
-};
+} elseif (count($description) == 0) {
+	$description = "";
+	};
 
 if (count($rights) == 1) {
 	$rights = $rights[0];
-};
+} elseif (count($rights) == 0) {
+	$rights = "Private";
+	};
 
 if (count($provenance) == 1) {
 	$provenance = $provenance[0];
-};
+} elseif (count($provenance) == 0) {
+	$provenance = "NYU";
+	};
 
 if (count($references) == 1) {
 	$references = $references[0];
-};
+} elseif (count($references) == 0) {
+	$references = "";
+	};
 
 if (count($format) == 1) {
 	$format = $format[0];
-};
+} elseif (count($format) == 0) {
+	$format = "";
+	};
 
 if (count($language) == 1) {
 	$language = $language[0];
-};
+} elseif (count($language) == 0) {
+	$language = "";
+	};
 
 if (count($type) == 1) {
 	$type = $type[0];
-};
+} elseif (count($type) == 0) {
+	$type = "";
+	};
 
 if (count($publisher) == 1) {
 	$publisher = $publisher[0];
-};
+} elseif (count($publisher) == 0) {
+	$publisher = "";
+	};
 
 if (count($creator) == 1) {
 	$creator = $creator[0];
-};
+} elseif (count($creator) == 0) {
+	$creator = "";
+	};
 
 if (count($subject) == 1) {
 	$subject = $subject[0];
-};
+} elseif (count($subject) == 0) {
+	$subject = "";
+	};
 
 if (count($dateIssued) == 1) {
 	$dateIssued = $dateIssued[0];
-};
+} elseif (count($dateIssued) == 0) {
+	$dateIssued = "";
+	};
 
 if (count($temporalCoverage) == 1) {
 	$temporalCoverage = $temporalCoverage[0];
-};
+} elseif (count($temporalCoverage) == 0) {
+	$temporalCoverage = "";
+	};
 
 if (count($spatialCoverage) == 1) {
 	$spatialCoverage = $spatialCoverage[0];
-};
+} elseif (count($spatialCoverage) == 0) {
+	$spatialCoverage = "";
+	};
 
 if (count($relation) == 1) {
 	$relation = $relation[0];
-};
+} elseif (count($relation) == 0) {
+	$relation = "";
+	};
 
 if (count($isPartOf) == 1) {
 	$isPartOf = $isPartOf[0];
-};
+} elseif (count($isPartOf) == 0) {
+	$isPartOf = "";
+	};
 
 if (count($UUID) == 1) {
 	$UUID = $UUID[0];
-};
+} elseif (count($UUID) == 0) {
+	$UUID = "/UUID/NEEDED";
+	};
 
 if (count($layerID) == 1) {
 	$layerID = $layerID[0];
-};
+} elseif (count($layerID) == 0) {
+	$layerID = "";
+	};
 
 if (count($slug) == 1) {
 	$slug = $slug[0];
-};
+} elseif (count($slug) == 0) {
+	$slug = "";
+	};
 
 if (count($geomType) == 1) {
 	$geomType = $geomType[0];
-};
+} elseif (count($geomType) == 0) {
+	$geomType = "";
+	};
 
 if (count($layerModDate) == 1) {
 	$layerModDate = $layerModDate[0];
-};
+} elseif (count($layerModDate) == 0) {
+	$layerModDate = "";
+	};
 
 if (count($geoRSSBox) == 1) {
 	$geoRSSBox = $geoRSSBox[0];
-};
+} elseif (count($geoRSSBox) == 0) {
+	$geoRSSBox = "0,0,0,0";
+	};
 
 if (count($geoRSSPoint) == 1) {
 	$geoRSSPoint = $geoRSSPoint[0];
-};
+} elseif (count($geoRSSPoint) == 0) {
+	$geoRSSPoint = "";
+	};
 
 if (count($geoRSSPolygon) == 1) {
 	$geoRSSPolygon = $geoRSSPolygon[0];
-};
+} elseif (count($geoRSSPolygon) == 0) {
+	$geoRSSPolygon = "";
+	};
 
 if (count($solrGeom) == 1) {
 	$solrGeom = $solrGeom[0];
-};
+} elseif (count($solrGeom) == 0) {
+	$solrGeom = "";
+	};
 
 if (count($solrYear) == 1) {
 	$solrYear = $solrYear[0];
-};
+} elseif (count($solrYear) == 0) {
+	$solrYear = "";
+	};
 
-if ($slug[0] == "OVERRIDE") {
-	$slug = $slug[1];
+if (is_array($slug)) {
+	if ($slug[0] == "OVERRIDE") {
+		$slug = $slug[1];
+		} else {
+		$slug = deriveSlug($slug[0]);
+		};
 } else {
 	$slug = deriveSlug($title);
 };
 
-if ($layerID[0] == "OVERRIDE") {
-	$layerID = $layerID[1];
+if (is_array($layerID)) {
+	if ($layerID[0] == "OVERRIDE") {
+		$layerID = $layerID[1];
+		};
 } else {
 	$layerID = $GeoServerWS.":".deriveSlug($title);
 };
 
-if ($identifier[0] == "OVERRIDE") {
+if (is_array($identifier)) {
+	if ($identifier[0] == "OVERRIDE") {
 	$identifier = $identifier[1];
-	} else {
-	$identifier = $UUID;
 	};
-	
+} else {
+	$identifier = $UUID;
+};
+
+/* corrections */
+if ($language == "English") {
+	$language = "eng";
+	};
+
+
 /* references logic */
 $UUIDNetPos = strpos($UUID, ".net/");
 $UUIDNumBegin = $UUIDNetPos + 5;
@@ -186,8 +256,8 @@ if ($rights == "Public") {
 	$WFS = $geoserverPublic."wfs";
 	$WMS = $geoserverPublic."wms";
 	} elseif ($rights == "Private") {
-	$WFS = $geoserverPrivate."wfs";
-	$WMS = $geoserverPrivate."wms";
+	$WFS = $geoserverRestricted."wfs";
+	$WMS = $geoserverRestricted."wms";
 	} else {
 	$WFS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";
 	$WMS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";
