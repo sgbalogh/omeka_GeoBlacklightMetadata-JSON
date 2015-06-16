@@ -8,15 +8,27 @@ function deriveSlug ($string) {
 	return $flatten;
 	};
 
+$itemSum = 0;
+foreach(loop('items') as $num):
+if ($num) {
+	$itemSum = $itemSum + 1;
+	};
+endforeach;
+
+$itemSumInternal = 0;
+echo("{");
 foreach(loop('items') as $item): 
 
+if ($item) {
+	$itemSumInternal = $itemSumInternal + 1;
+	};
 
 /* system variables */
 $GeoServerWS = "nyu_sdr";
 
 /* metadata variables */
 
-if (metadata($item, array('GeoBlacklight', 'UUID'), array('all'=>true, 'no_escape'=>true))) {
+
 
 $identifier = metadata($item, array('Dublin Core', 'Identifier'), array('all'=>true, 'no_escape'=>true));
 $title = metadata($item, array('Dublin Core', 'Title'), array('all'=>true, 'no_escape'=>true));
@@ -57,135 +69,203 @@ if (count($identifier) == 1) {
 
 if (count($title) == 1) {
 	$title = $title[0];
-};
+} elseif (count($title) == 0) {
+	$title = "hey hey its a test";
+	};
 
 if (count($description) == 1) {
 	$description = $description[0];
-};
+} elseif (count($description) == 0) {
+	$description = "";
+	};
 
 if (count($rights) == 1) {
 	$rights = $rights[0];
-};
+} elseif (count($rights) == 0) {
+	$rights = "";
+	};
 
 if (count($provenance) == 1) {
 	$provenance = $provenance[0];
-};
+} elseif (count($provenance) == 0) {
+	$provenance = "";
+	};
 
 if (count($references) == 1) {
 	$references = $references[0];
-};
+} elseif (count($references) == 0) {
+	$references = "";
+	};
 
 if (count($format) == 1) {
 	$format = $format[0];
-};
+} elseif (count($format) == 0) {
+	$format = "";
+	};
 
 if (count($language) == 1) {
 	$language = $language[0];
-};
+} elseif (count($language) == 0) {
+	$language = "";
+	};
 
 if (count($type) == 1) {
 	$type = $type[0];
-};
+} elseif (count($type) == 0) {
+	$type = "";
+	};
 
 if (count($publisher) == 1) {
 	$publisher = $publisher[0];
-};
+} elseif (count($publisher) == 0) {
+	$publisher = "";
+	};
 
 if (count($creator) == 1) {
 	$creator = $creator[0];
-};
+} elseif (count($creator) == 0) {
+	$creator = "";
+	};
 
 if (count($subject) == 1) {
 	$subject = $subject[0];
-};
+} elseif (count($subject) == 0) {
+	$subject = "";
+	};
 
 if (count($dateIssued) == 1) {
 	$dateIssued = $dateIssued[0];
-};
+} elseif (count($dateIssued) == 0) {
+	$dateIssued = "";
+	};
 
 if (count($temporalCoverage) == 1) {
 	$temporalCoverage = $temporalCoverage[0];
-};
+} elseif (count($temporalCoverage) == 0) {
+	$temporalCoverage = "";
+	};
 
 if (count($spatialCoverage) == 1) {
 	$spatialCoverage = $spatialCoverage[0];
-};
+} elseif (count($spatialCoverage) == 0) {
+	$spatialCoverage = "";
+	};
 
 if (count($relation) == 1) {
 	$relation = $relation[0];
-};
+} elseif (count($relation) == 0) {
+	$relation = "";
+	};
 
 if (count($isPartOf) == 1) {
 	$isPartOf = $isPartOf[0];
-};
+} elseif (count($isPartOf) == 0) {
+	$isPartOf = "";
+	};
 
 if (count($UUID) == 1) {
 	$UUID = $UUID[0];
-};
+} elseif (count($UUID) == 0) {
+	$UUID = "/UUID/NEEDED";
+	};
 
 if (count($layerID) == 1) {
 	$layerID = $layerID[0];
-};
+} elseif (count($layerID) == 0) {
+	$layerID = "";
+	};
 
 if (count($slug) == 1) {
 	$slug = $slug[0];
-};
+} elseif (count($slug) == 0) {
+	$slug = "";
+	};
 
 if (count($geomType) == 1) {
 	$geomType = $geomType[0];
-};
+} elseif (count($geomType) == 0) {
+	$geomType = "";
+	};
 
 if (count($layerModDate) == 1) {
 	$layerModDate = $layerModDate[0];
-};
+} elseif (count($layerModDate) == 0) {
+	$layerModDate = "";
+	};
 
 if (count($geoRSSBox) == 1) {
 	$geoRSSBox = $geoRSSBox[0];
-};
+} elseif (count($geoRSSBox) == 0) {
+	$geoRSSBox = "0,0,0,0";
+	};
 
 if (count($geoRSSPoint) == 1) {
 	$geoRSSPoint = $geoRSSPoint[0];
-};
+} elseif (count($geoRSSPoint) == 0) {
+	$geoRSSPoint = "";
+	};
 
 if (count($geoRSSPolygon) == 1) {
 	$geoRSSPolygon = $geoRSSPolygon[0];
-};
+} elseif (count($geoRSSPolygon) == 0) {
+	$geoRSSPolygon = "";
+	};
 
 if (count($solrGeom) == 1) {
 	$solrGeom = $solrGeom[0];
-};
+} elseif (count($solrGeom) == 0) {
+	$solrGeom = "";
+	};
 
 if (count($solrYear) == 1) {
 	$solrYear = $solrYear[0];
-};
-
-if ($slug[0] == "OVERRIDE") {
-	$slug = $slug[1];
+} elseif (count($solrYear) == 0) {
+	$solrYear = "";
+	};
+	
+if (is_array($slug)) {
+	if ($slug[0] == "OVERRIDE") {
+		$slug = $slug[1];
+		} else {
+		$slug = deriveSlug($slug[0]);
+		};
 } else {
 	$slug = deriveSlug($title);
 };
 
-if ($layerID[0] == "OVERRIDE") {
-	$layerID = $layerID[1];
+if (is_array($layerID)) {
+	if ($layerID[0] == "OVERRIDE") {
+		$layerID = $layerID[1];
+		};
 } else {
 	$layerID = $GeoServerWS.":".deriveSlug($title);
 };
 
-if ($identifier[0] == "OVERRIDE") {
+if (is_array($identifier)) {
+	if ($identifier[0] == "OVERRIDE") {
 	$identifier = $identifier[1];
-	} else {
-	$identifier = $UUID;
 	};
+} else {
+	$identifier = $UUID;
+};
 	
 /* references logic */
-$UUIDNetPos = strpos($UUID, ".net/");
-$UUIDNumBegin = $UUIDNetPos + 5;
-$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
-$repoFileNum = "2";
-
-$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
-$geoserverPublic = "http://geoserver.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
-$geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+if (strpos($UUID, ".net/") !== false) {
+	$UUIDNetPos = strpos($UUID, ".net/");
+	$UUIDNumBegin = $UUIDNetPos + 5;
+	$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
+	$repoFileNum = "2";
+	$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
+	$geoserverPublic = "http://geoserver.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+	$geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+} else {
+	$UUID_uniq = "NEED/UUID";
+	$repoFileNum = "9";
+	$downloadURL = "NEED UUID";
+	$geoserverPublic = "NEED UUID";
+	$geoserverRestricted = "NEED UUID";
+	};
+	
 
 if ($rights == "Public") {
 	$WFS = $geoserverPublic."wfs";
@@ -234,6 +314,7 @@ $CDT = getdate();
 $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].":".$CDT['minutes'].":".$CDT['seconds']."Z";
 
 ?>
+<?php echo(json_encode("output ".strval($itemSumInternal)));?>: [
 {
 "uuid": <?php echo(json_encode($UUID)); ?>,
 "dc_identifier_s": <?php echo(json_encode($identifier)); ?>,
@@ -261,8 +342,6 @@ $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].
 "georss_polygon_s": <?php echo(json_encode($geoRSSPolygon)); ?>,
 "solr_geom": <?php echo(json_encode($solrGeom)); ?>,
 "solr_year_i": <?php echo(json_encode(intval($solrYear))); ?>
-
-}
+}<?php if ($itemSumInternal < $itemSum) { echo("],"); } else { echo("] \n }"); };?>
 <?php 
-};
 endforeach; ?>
