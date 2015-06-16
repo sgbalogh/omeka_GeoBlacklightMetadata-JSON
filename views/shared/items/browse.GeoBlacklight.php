@@ -389,7 +389,7 @@ endforeach;
 $entire_request_end = microtime(true);
 $entire_request_time = $entire_request_end - $entire_request_begin;
 $runTot_entire_diff = $entire_request_time - $runningtotal;
-$printed_request_time = "Entire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." with difference equaling ".($runTot_entire_diff)."\n";
+$printed_request_time = "Entire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." seconds, with difference equaling ".($runTot_entire_diff*1000)." ms\n\n";
 $log = fopen("/library/webserver/documents/omeka/logs/speed.txt", "a") or die("Unable to open file!");
 fwrite($log, $printed_request_time);
 fclose($log);
