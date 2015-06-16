@@ -237,9 +237,12 @@ if (is_array($identifier)) {
 };
 
 /* corrections */
-if ($language == "English") {
+$engSynonyms = array("English", "Eng", "english", "engl", "Engl", "ENG");
+
+if (in_array($language, $engSynonyms)) {
 	$language = "eng";
 	};
+
 
 
 /* references logic */
@@ -263,12 +266,14 @@ if ($rights == "Public") {
 	$WMS = "ERROR DETERMINING URL, CHECK RIGHTS SECTION";
 	};
 
-/*$references = array(
+/*
+$references = array(
 "http://schema.org/url" => $UUID,
 "http://schema.org/downloadUrl" => $downloadURL,
 "http://www.opengis.net/def/serviceType/ogc/wfs" => $WFS,
 "http://www.opengis.net/def/serviceType/ogc/wms" => $WMS,
-);*/
+);
+*/
 
 $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/downloadUrl\":\"".$downloadURL."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
 
