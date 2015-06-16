@@ -1,5 +1,7 @@
 <?php /* REQUIRES PHP 5.2 OR LATER, on account of json_encode() function. */ ?>
-<?php 
+<?php
+$entire_request_begin = microtime(true);
+$runningtotal = 0;
 include 'location_DB.php';
 function deriveSlug ($string) {
     $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
@@ -19,6 +21,8 @@ endforeach;
 $itemSumInternal = 0;
 echo("{");
 foreach(loop('items') as $item): 
+
+$begin_item_time = microtime(true);
 
 if ($item) {
 	$itemSumInternal = $itemSumInternal + 1;
@@ -302,6 +306,10 @@ $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/down
 */
 
 		/* location database search */
+		
+$orig_gRB = $geoRSSBox;
+$begin_time_dbsearch = microtime(true);
+
 $numlocs = count($locDB);
 for ($x = 0; $x < $numlocs; $x++) {
 	$opLoc = $locDB[$x]['location'];
@@ -310,6 +318,10 @@ for ($x = 0; $x < $numlocs; $x++) {
 				$geoRSSBox = $locDB[$x]['bbox'];
 		};
 };
+
+$end_time_dbsearch = microtime(true);
+$db_search_time = $end_time_dbsearch - $begin_time_dbsearch;
+$printed_search_time = "Item ".strval($itemSumInternal)."-- Searching for ".$orig_gRB."\nItem ".strval($itemSumInternal)."-- Database search time (ms): ".($db_search_time * 1000)."\n";
 
 $posCom1 = strpos($geoRSSBox, ",");
 $posCom2 = strpos($geoRSSBox, ",", $posCom1+1);
@@ -364,4 +376,21 @@ $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].
 "solr_year_i": <?php echo(json_encode(intval($solrYear))); ?>
 }<?php if ($itemSumInternal < $itemSum) { echo("],"); } else { echo("] \n }"); };?>
 <?php 
-endforeach; ?>
+$end_item_time = microtime(true);
+$item_time = $end_item_time - $begin_item_time;
+$runningtotal = $runningtotal + $item_time;
+$printed_item_time = "Item ".strval($itemSumInternal)."-- Total processing time (ms): ".($item_time * 1000)."\n\n";
+$log = fopen("/library/webserver/documents/omeka/logs/speed.txt", "a") or die("Unable to open file!");
+fwrite($log, $printed_search_time);
+fwrite($log, $printed_item_time);
+fclose($log);
+
+endforeach; 
+$entire_request_end = microtime(true);
+$entire_request_time = $entire_request_end - $entire_request_begin;
+$runTot_entire_diff = $entire_request_time - $runningtotal;
+$printed_request_time = "Entire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." with difference equaling ".($runTot_entire_diff)."\n";
+$log = fopen("/library/webserver/documents/omeka/logs/speed.txt", "a") or die("Unable to open file!");
+fwrite($log, $printed_request_time);
+fclose($log);
+?>
