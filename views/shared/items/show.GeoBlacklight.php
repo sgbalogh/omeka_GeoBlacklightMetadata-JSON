@@ -214,7 +214,7 @@ if (is_array($slug)) {
 	if ($slug[0] == "OVERRIDE") {
 		$slug = $slug[1];
 		} else {
-		$slug = deriveSlug($slug[0]);
+		$slug = deriveSlug($title);
 		};
 } else {
 	$slug = deriveSlug($title);
@@ -242,8 +242,6 @@ $engSynonyms = array("English", "Eng", "english", "engl", "Engl", "ENG");
 if (in_array($language, $engSynonyms)) {
 	$language = "eng";
 	};
-
-
 
 /* references logic */
 $UUIDNetPos = strpos($UUID, ".net/");
