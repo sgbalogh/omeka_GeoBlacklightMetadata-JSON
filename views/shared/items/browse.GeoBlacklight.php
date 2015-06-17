@@ -4,10 +4,10 @@ $entire_request_begin = microtime(true);
 include 'location_DB.php';
 include 'localvars.php';
 $runningtotal = 0;
-$log = fopen($speedlog, "a") or die("Unable to open file!");
+/*$log = fopen($speedlog, "a") or die("Unable to open file!");*/
 $begin_time = getdate();
 $begin_statement = "Beginning record export, on ".$begin_time['mon']."-".$begin_time['mday']."-".$begin_time['year'].", at ".$begin_time['hours'].":".$begin_time['minutes'].":".$begin_time['seconds']." UTC\n//////////////////////////////////////////////\n\n";
-fwrite($log, $begin_statement);
+/*fwrite($log, $begin_statement);*/
 $email_report = $begin_statement;
 
 
@@ -389,8 +389,8 @@ $end_item_time = microtime(true);
 $item_time = $end_item_time - $begin_item_time;
 $runningtotal = $runningtotal + $item_time;
 $printed_item_time = "Item ".strval($itemSumInternal)."-- Total processing time (ms): ".($item_time * 1000)."\n\n";
-fwrite($log, $printed_search_time);
-fwrite($log, $printed_item_time);
+/*fwrite($log, $printed_search_time);
+fwrite($log, $printed_item_time);*/
 $email_report = $email_report.$printed_item_time;
 
 endforeach; 
@@ -398,12 +398,12 @@ $entire_request_end = microtime(true);
 $entire_request_time = $entire_request_end - $entire_request_begin;
 $runTot_entire_diff = $entire_request_time - $runningtotal;
 $printed_request_time = "===============================================\nEntire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." seconds, with difference equaling ".($runTot_entire_diff*1000)." ms\n===============================================\n\n";
-fwrite($log, $printed_request_time);
-fclose($log);
+/*fwrite($log, $printed_request_time);
+fclose($log);*/
 /* mail report */
 $email_report = $email_report.$printed_request_time;
 $headers = 'From: sgbalogh@pretentiobot.org' . "\r\n" .
-    'Reply-To: sgbalogh@gmail.com' . "\r\n" .
+    'Reply-To: me@me.net' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
 /*mail($email_me, 'Export Report', $email_report, $headers);*/
 ?>
