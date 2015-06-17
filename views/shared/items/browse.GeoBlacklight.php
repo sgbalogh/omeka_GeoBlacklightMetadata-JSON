@@ -1,8 +1,16 @@
 <?php /* REQUIRES PHP 5.2 OR LATER, on account of json_encode() function. */ ?>
 <?php
 $entire_request_begin = microtime(true);
-$runningtotal = 0;
 include 'location_DB.php';
+include 'localvars.php';
+$runningtotal = 0;
+$log = fopen($speedlog, "a") or die("Unable to open file!");
+$begin_time = getdate();
+$begin_statement = "Beginning record export, on ".$begin_time['mon']."-".$begin_time['mday']."-".$begin_time['year'].", at ".$begin_time['hours'].":".$begin_time['minutes'].":".$begin_time['seconds']." UTC\n//////////////////////////////////////////////\n\n";
+fwrite($log, $begin_statement);
+$email_report = $begin_statement;
+
+
 function deriveSlug ($string) {
     $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
     $lessjunk = str_replace($junkWords, '', $string);
@@ -322,6 +330,7 @@ for ($x = 0; $x < $numlocs; $x++) {
 $end_time_dbsearch = microtime(true);
 $db_search_time = $end_time_dbsearch - $begin_time_dbsearch;
 $printed_search_time = "Item ".strval($itemSumInternal)."-- Searching for ".$orig_gRB."\nItem ".strval($itemSumInternal)."-- Database search time (ms): ".($db_search_time * 1000)."\n";
+$email_report = $email_report."\nTitle: ".$title."\nUUID: ".$UUID."\n";
 
 $posCom1 = strpos($geoRSSBox, ",");
 $posCom2 = strpos($geoRSSBox, ",", $posCom1+1);
@@ -380,17 +389,21 @@ $end_item_time = microtime(true);
 $item_time = $end_item_time - $begin_item_time;
 $runningtotal = $runningtotal + $item_time;
 $printed_item_time = "Item ".strval($itemSumInternal)."-- Total processing time (ms): ".($item_time * 1000)."\n\n";
-$log = fopen("/library/webserver/documents/omeka/logs/speed.txt", "a") or die("Unable to open file!");
 fwrite($log, $printed_search_time);
 fwrite($log, $printed_item_time);
-fclose($log);
+$email_report = $email_report.$printed_item_time;
 
 endforeach; 
 $entire_request_end = microtime(true);
 $entire_request_time = $entire_request_end - $entire_request_begin;
 $runTot_entire_diff = $entire_request_time - $runningtotal;
-$printed_request_time = "Entire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." seconds, with difference equaling ".($runTot_entire_diff*1000)." ms\n\n";
-$log = fopen("/library/webserver/documents/omeka/logs/speed.txt", "a") or die("Unable to open file!");
+$printed_request_time = "===============================================\nEntire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." seconds, with difference equaling ".($runTot_entire_diff*1000)." ms\n===============================================\n\n";
 fwrite($log, $printed_request_time);
 fclose($log);
+/* mail report */
+$email_report = $email_report.$printed_request_time;
+$headers = 'From: sgbalogh@pretentiobot.org' . "\r\n" .
+    'Reply-To: sgbalogh@gmail.com' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+/*mail($email_me, 'Export Report', $email_report, $headers);*/
 ?>
