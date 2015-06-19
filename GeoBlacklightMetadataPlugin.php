@@ -82,35 +82,20 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
   queue_js_string("
   
   var counter = 0;
-
   
   				jQuery(function($) {
   				
-  					
                 jeoquery.defaultData.userName = 'sgbalogh';
-                
-                $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
-                console.log(\"yea was clicked 1\");
-                
+            
+                $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});   
                  $(\"#Elements-46-1-text\").livequery(function(){
-                    console.log(\"here\");
                     counter = counter + 1;
-					console.log(counter);
 					var counterstr = counter.toString();
-					console.log(counterstr);
-                    var getit = \"Elements-46-\" + counterstr + \"-text\";
-                    console.log(getit);
+                    var getit = \"#Elements-46-\" + counterstr + \"-text\";
                     var checkelem = document.getElementById(getit);
-                    if (checkelem !== null) {
-
-					$(getit).jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
-					};
-                  
+					$(getit).jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});                 
 });
-                
-                
-               
-     			
+                	
             });
 ");
       }
