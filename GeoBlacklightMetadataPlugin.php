@@ -1,7 +1,7 @@
 <?php
 /**
  * GeoBlacklight Element Set for Omeka
- * 
+ *
  * Content in this plugin was shamelessly adapted from the Roy Rosenzweig Center for History and New Media's Dublin Core Extended plugin (http://omeka.org/add-ons/plugins/dublin-core-extended/)
  * ...and also (maybe even more so!) from Pop Up Archive and Daniel Berthereau's PBCore Element Set plugin (http://omeka.org/add-ons/plugins/pbcore-element-set/)
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
@@ -10,15 +10,16 @@
 class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 {
 
-	private $_elementSetName = 'GeoBlacklight';
-	
-      /**
+    private $_elementSetName = 'GeoBlacklight';
+
+    /**
      * @var array Hooks for the plugin.
      */
     protected $_hooks = array(
         'install',
         'uninstall',
         'admin_append_to_plugin_uninstall_message',
+        'admin_head',
     );
 
     /**
@@ -75,6 +76,30 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
         $this->_uninstallOptions();
     }
 
+    public function  hookAdminHead($args) {
+  queue_js_url('http://pretentiobot.org/demo/apicopy/jeoquery.js');
+  queue_js_url('http://pretentiobot.org/demo/apicopy/jquery.livequery.min.js');
+  queue_js_string("
+  
+  var counter = 0;
+  
+  				jQuery(function($) {
+  				
+                jeoquery.defaultData.userName = 'sgbalogh';
+            
+                $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});   
+                 $(\"#Elements-46-1-text\").livequery(function(){
+                    counter = counter + 1;
+					var counterstr = counter.toString();
+                    var getit = \"#Elements-46-\" + counterstr + \"-text\";
+                    var checkelem = document.getElementById(getit);
+					$(getit).jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});                 
+});
+                	
+            });
+");
+      }
+
     /**
      * Warns before the uninstallation of the plugin.
      */
@@ -125,7 +150,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
             $elementSet->delete();
         }
     }
-    
+
     public function dc_identifier_edit($components, $args)
     {
         $components['comment'] = "If you are depositing a data set, leave this field blank.";
@@ -213,14 +238,14 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
     public function geoblacklight_grbox_edit($components, $args)
     {
-    	$components['description'] = "Bounding box as maximum values for <tt>S W N E</tt><br><br>";
+        $components['description'] = "Bounding box as maximum values for <tt>S W N E</tt><br><br>";
         $components['comment'] = "Provide the coordinates for the area your layer covers. To do this, use <a href=\"http://boundingbox.klokantech.com/\" target=\"_blank\">this bounding box tool</a> and draw a box around the total area your layer represents. Toggle down to CSV, copy the value to your clipboard, and then paste the value here. Finally, remove the commas and leave white spaces in between the numbers.";
         return $components;
     }
-     public function geoblacklight_georsspoly_description_edit($components, $args)
+    public function geoblacklight_georsspoly_description_edit($components, $args)
     {
         $components['description'] = "Shape of the layer as a Polygon in the form:<br><tt>S W N W N E S E S W</tt><br>";
         return $components;
     }
-    
+
 }
