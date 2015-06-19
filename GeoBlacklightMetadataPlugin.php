@@ -78,18 +78,30 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 
     public function  hookAdminHead($args) {
   queue_js_url('http://pretentiobot.org/demo/apicopy/jeoquery.js');
+  queue_js_url('http://pretentiobot.org/demo/apicopy/jquery.livequery.min.js');
   queue_js_string("
   
   
   
-  
   				jQuery(function($) {
+  				
+  				
                 jeoquery.defaultData.userName = 'sgbalogh';
-                
-                var flag = false;
-                
-                $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
+                var myElem = document.getElementById('Elements-46-0-text');
+                if (myElem == null) { console.log('does not exist!');} else {console.log('exists');};
+                 $('textarea').livequery(function(){
+    $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
                 console.log(\"yea was clicked\");
+                    $(\"#Elements-46-1-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
+                console.log(\"yea was clicked\");
+                    $(\"#Elements-46-2-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
+                console.log(\"yea was clicked\");
+                    $(\"#Elements-46-3-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
+                console.log(\"yea was clicked\");
+                    $(\"#Elements-46-4-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
+                console.log(\"yea was clicked\");
+});
+                
                 
                
      			
