@@ -185,7 +185,7 @@ if (count($layerModDate) == 1) {
 	};
 
 if (count($geoRSSBox) !== 1) {
-	$geoRSSBox = "";
+	$geoRSSBox = "0,0,0,0";
 } elseif (count($geoRSSBox) == 1) {
 	$geoRSSBox = $geoRSSBox[0];
 	};
@@ -193,7 +193,7 @@ if (count($geoRSSBox) !== 1) {
 if (count($geoRSSPoint) == 1) {
 	$geoRSSPoint = $geoRSSPoint[0];
 } elseif (count($geoRSSPoint) == 0) {
-	$geoRSSPoint = "";
+	$geoRSSPoint = "0,0,0,0";
 	};
 
 if (count($geoRSSPolygon) == 1) {
@@ -347,7 +347,7 @@ $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/down
 
 $numlocs = count($locDB);
 
-if ($geoRSSBox !== "") {
+if ($geoRSSBox !== "0,0,0,0") {
     /*
     for ($x = 0; $x < $numlocs; $x++) {
         $opLoc = $locDB[$x]['location'];
@@ -371,14 +371,19 @@ if ($geoRSSBox !== "") {
     $S = substr($geoRSSBox, $posCom1 + 1, $Slen);
     $E = substr($geoRSSBox, $posCom2 + 1, $Elen);
     $N = substr($geoRSSBox, $posCom3 + 1, $Nlen);
-};
+} else {
+    $N = 0;
+    $S = 0;
+    $E = 0;
+    $W = 0;
+}
 
-if ($res_north && $res_south && $res_east && $res_west) {
+if (isset($res_north)) {
     $N = $res_north;
     $S = $res_south;
     $E = $res_east;
     $W = $res_east;
-};
+} else {};
 
 $geoRSSBox = $S." ".$W." ".$N." ".$E;
 $geoRSSPolygon = $S." ".$W." ".$N." ".$W." ".$N." ".$E." ".$S." ".$E." ".$S." ".$W;
