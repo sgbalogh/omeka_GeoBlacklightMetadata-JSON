@@ -135,11 +135,13 @@ if (count($temporalCoverage) == 1) {
 	$temporalCoverage = "";
 	};
 
+/*
 if (count($spatialCoverage) == 1) {
 	$spatialCoverage = $spatialCoverage[0];
 } elseif (count($spatialCoverage) == 0) {
 	$spatialCoverage = "";
 	};
+*/
 
 /*
 if (count($relation) == 1) {
@@ -260,15 +262,26 @@ for ($x = 0; $x < $numRel; $x++) {
     $geonameID = substr($rel, 0, $RelColonPos);
     array_push($geoIDstack, $geonameID);
     $placenamelen = strlen($rel) - $RelColonPos - 2;
-    $placename = substr($rel, $RelColonPos+2, $placenamelen);
-    array_push($subAddStack, $placename);
+    $placenameorig = substr($rel, $RelColonPos+2, $placenamelen);
+    $RelPar1 = strpos($rel, "(");
+    $RelPar2 = strpos($rel, ")");
+    $paren = substr($rel, $RelPar1 - 1, $RelPar2 - $RelPar1 + 2);
+    $placenametrim = str_replace($paren, '', $placenameorig);
+    	if ($paren == " (country, state, region,...)") {
+    		$comma1 = strpos($placenametrim, ",");
+    		$comma2 = strpos($placenametrim, ",", $comma1 + 1);
+    		$remove = substr($placenametrim, $comma1, $comma2 - $comma1);
+    		$placenametrim = str_replace($remove, '', $placenametrim);
+    	};
+    
+    array_push($subAddStack, $placenametrim);
 
 }
 
 $numSubAddStack = count($subAddStack);
 
 for ($x = 0; $x < $numSubAddStack; $x++) {
-    array_push($subject, $subAddStack[$x]);
+    array_push($spatialCoverage, $subAddStack[$x]);
 
 }
 
