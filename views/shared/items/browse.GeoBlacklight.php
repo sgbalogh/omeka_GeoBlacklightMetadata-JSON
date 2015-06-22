@@ -326,6 +326,8 @@ $printed_search_time = "Item ".strval($itemSumInternal)."-- Searching for ".$ori
 $email_report = $email_report."\nTitle: ".$title."\nUUID: ".$UUID."\n";
 */
 
+$res_north = 0;
+
 if ($geoIDnum >= 1) {
     $loclookup = $geoIDstack[0];
     $query = array(
@@ -428,7 +430,7 @@ if ($geoRSSBox !== "0,0,0,0") {
     $W = 0;
 }
 
-if (isset($res_north)) {
+if ($res_north !== 0) {
     $N = $res_north;
     $S = $res_south;
     $E = $res_east;
