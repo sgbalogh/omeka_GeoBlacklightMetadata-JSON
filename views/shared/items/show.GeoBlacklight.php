@@ -309,12 +309,13 @@ if ($geoIDnum >= 1) {
     curl_setopt($cc_1, CURLOPT_RETURNTRANSFER, true);
     $output = curl_exec($cc_1);
     curl_close($cc_1);
-
     $output_json = json_decode($output, $assoc = true);
+    if (in_array("bbox", $output_json)) {
     $res_north = $output_json['bbox']['north'];
     $res_south = $output_json['bbox']['south'];
     $res_east = $output_json['bbox']['east'];
     $res_west = $output_json['bbox']['west'];
+    }
 };
 
 /*end geonames */
