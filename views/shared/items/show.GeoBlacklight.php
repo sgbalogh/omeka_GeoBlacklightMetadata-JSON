@@ -265,7 +265,7 @@ for ($x = 0; $x < $numRel; $x++) {
     $placenameorig = substr($rel, $RelColonPos+2, $placenamelen);
     $RelPar1 = strpos($rel, "(");
     $RelPar2 = strpos($rel, ")");
-    $paren = substr($rel, $RelPar1 - 1, $RelPar2 - $RelPar1 + 2);
+    $paren = substr($rel, $RelPar1 - 1, ($RelPar2 - $RelPar1 + 2));
     $placenametrim = str_replace($paren, '', $placenameorig);
     	if ($paren == " (country, state, region,...)") {
     		$comma1 = strpos($placenametrim, ",");
