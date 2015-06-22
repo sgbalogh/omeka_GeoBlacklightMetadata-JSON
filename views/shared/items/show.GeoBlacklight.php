@@ -70,7 +70,7 @@ if (count($description) == 1) {
 if (count($rights) == 1) {
 	$rights = $rights[0];
 } elseif (count($rights) == 0) {
-	$rights = "Private";
+	$rights = "Restricted";
 	};
 
 if (count($provenance) == 1) {
@@ -335,7 +335,7 @@ $geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".
 if ($rights == "Public") {
 	$WFS = $geoserverPublic."wfs";
 	$WMS = $geoserverPublic."wms";
-	} elseif ($rights == "Private") {
+	} elseif ($rights == "Restricted") {
 	$WFS = $geoserverRestricted."wfs";
 	$WMS = $geoserverRestricted."wms";
 	} else {
