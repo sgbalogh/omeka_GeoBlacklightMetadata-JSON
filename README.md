@@ -13,7 +13,7 @@ The JSON-producing version of this plugin contains many enhancements compared to
 2. Detects synonyms and replaces with standarized language (e.g. "English" => "eng")
 3. Generates References field with the GeoServer URL corresponding to the Rights setting, and the DSpace download URL corresponding to the UURI.
 4. Parses N S E W coordinates if user submits custom bounding box, and uses these coordinates to generate Solr and GeoRSS bounding box geometry.
-5. Introduces suggestion service that populates autocomplete suggestions for Relation based on placenames from the GeoNames API, writes correctly formatted placenames into Place field, and extracts linked-data (RDF) URLs for the cooresponding locations. ([jeoQuery](http://tompi.github.io/jeoquery/) used for this.)
+5. Introduces suggestion service that populates autocomplete suggestions for Relation based on placenames from the GeoNames API, writes correctly formatted placenames into Place field, and extracts linked-data (RDF) URLs for the cooresponding locations ([jeoQuery](http://tompi.github.io/jeoquery/) is used for this).
 6. Extracts bounding box data coorresponding to GeonameID (provided in previous step) from GeoNames lookup API.
 7. Allows batch exporting of unlimited amount of JSON records from Omeka API.
 8. Includes  log and timing data reporting for batch record exports.
