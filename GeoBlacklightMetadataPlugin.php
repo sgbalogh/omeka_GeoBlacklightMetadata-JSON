@@ -81,19 +81,35 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
   queue_js_url('http://pretentiobot.org/demo/apicopy/jquery.livequery.min.js');
   queue_js_string("
   
-  var counter = 0;
+
   
   				jQuery(function($) {
   				
                 jeoquery.defaultData.userName = 'sgbalogh';
             
-                $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});   
-                 $(\"#Elements-46-1-text\").livequery(function(){
-                    counter = counter + 1;
-					var counterstr = counter.toString();
-                    var getit = \"#Elements-46-\" + counterstr + \"-text\";
-                    var checkelem = document.getElementById(getit);
-					$(getit).jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});                 
+                $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});  
+                
+                 	var elementname = function(num) {
+                 	return \"Elements-46-\"+num+\"-text\";
+                 	};
+                 	
+                 	var checkexist = function(num) {
+                 			if (document.getElementById(elementname(num)) !== null) {
+                 			return true;
+                 			} else { return false; };
+                 	};
+                 	
+                 	var elementtag = function(num) {
+                 		return \"#\" + elementname(num);
+                 	};
+                		$(\"#add_element_46\").livequery(function(){
+                			counter = 0;
+                			while (checkexist(counter)) {
+                			var activateinput = elementtag(counter);
+							$(activateinput).jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});
+							counter++;
+						
+        			 };
 });
                 	
             });
