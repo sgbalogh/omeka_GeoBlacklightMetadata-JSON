@@ -83,7 +83,7 @@ if (count($identifier) == 1) {
 if (count($title) == 1) {
 	$title = $title[0];
 } elseif (count($title) == 0) {
-	$title = "hey hey its a test";
+	$title = "MISSING TITLE";
 	};
 
 if (count($description) == 1) {
@@ -95,13 +95,13 @@ if (count($description) == 1) {
 if (count($rights) == 1) {
 	$rights = $rights[0];
 } elseif (count($rights) == 0) {
-	$rights = "";
+	$rights = "Restricted";
 	};
 
 if (count($provenance) == 1) {
 	$provenance = $provenance[0];
 } elseif (count($provenance) == 0) {
-	$provenance = "";
+	$provenance = "NYU";
 	};
 
 if (count($references) == 1) {
@@ -140,11 +140,13 @@ if (count($creator) == 1) {
 	$creator = "";
 	};
 
+/*
 if (count($subject) == 1) {
 	$subject = $subject[0];
 } elseif (count($subject) == 0) {
 	$subject = "";
 	};
+*/
 
 if (count($dateIssued) == 1) {
 	$dateIssued = $dateIssued[0];
@@ -158,18 +160,21 @@ if (count($temporalCoverage) == 1) {
 	$temporalCoverage = "";
 	};
 
+/*
 if (count($spatialCoverage) == 1) {
 	$spatialCoverage = $spatialCoverage[0];
 } elseif (count($spatialCoverage) == 0) {
 	$spatialCoverage = "";
 	};
+*/
 
+/*
 if (count($relation) == 1) {
 	$relation = $relation[0];
 } elseif (count($relation) == 0) {
 	$relation = "";
 	};
-
+*/
 if (count($isPartOf) == 1) {
 	$isPartOf = $isPartOf[0];
 } elseif (count($isPartOf) == 0) {
@@ -206,16 +211,16 @@ if (count($layerModDate) == 1) {
 	$layerModDate = "";
 	};
 
-if (count($geoRSSBox) == 1) {
-	$geoRSSBox = $geoRSSBox[0];
-} elseif (count($geoRSSBox) == 0) {
+if (count($geoRSSBox) !== 1) {
 	$geoRSSBox = "0,0,0,0";
+} elseif (count($geoRSSBox) == 1) {
+	$geoRSSBox = $geoRSSBox[0];
 	};
 
 if (count($geoRSSPoint) == 1) {
 	$geoRSSPoint = $geoRSSPoint[0];
 } elseif (count($geoRSSPoint) == 0) {
-	$geoRSSPoint = "";
+	$geoRSSPoint = "0,0,0,0";
 	};
 
 if (count($geoRSSPolygon) == 1) {
@@ -235,7 +240,7 @@ if (count($solrYear) == 1) {
 } elseif (count($solrYear) == 0) {
 	$solrYear = "";
 	};
-	
+
 if (is_array($slug)) {
 	if ($slug[0] == "OVERRIDE") {
 		$slug = $slug[1];
@@ -261,13 +266,89 @@ if (is_array($identifier)) {
 } else {
 	$identifier = $UUID;
 };
-	
+
 /* corrections */
 $engSynonyms = array("English", "Eng", "english", "engl", "Engl", "ENG");
 
 if (in_array($language, $engSynonyms)) {
 	$language = "eng";
 	};
+
+/* relations/geonames suggest logic */
+$geoIDstack = array();
+$subAddStack = array();
+
+$numRel = count($relation);
+
+for ($x = 0; $x < $numRel; $x++) {
+    $rel = $relation[$x];
+    $RelColonPos = strpos($rel, ":");
+    $geonameID = substr($rel, 0, $RelColonPos);
+    array_push($geoIDstack, $geonameID);
+    $placenamelen = strlen($rel) - $RelColonPos - 2;
+    $placenameorig = substr($rel, $RelColonPos+2, $placenamelen);
+    $RelPar1 = strpos($rel, "(");
+    $RelPar2 = strpos($rel, ")");
+    $paren = substr($rel, $RelPar1 - 1, $RelPar2 - $RelPar1 + 2);
+    $placenametrim = str_replace($paren, '', $placenameorig);
+    	if ($paren == " (country, state, region,...)") {
+    		$comma1 = strpos($placenametrim, ",");
+    		$comma2 = strpos($placenametrim, ",", $comma1 + 1);
+    		$remove = substr($placenametrim, $comma1, $comma2 - $comma1);
+    		$placenametrim = str_replace($remove, '', $placenametrim);
+    	};
+    
+    array_push($subAddStack, $placenametrim);
+
+}
+
+$numSubAddStack = count($subAddStack);
+
+for ($x = 0; $x < $numSubAddStack; $x++) {
+    array_push($spatialCoverage, $subAddStack[$x]);
+
+}
+
+$relation = array();
+
+for ($x = 0; $x < $numRel; $x++) {
+    $link = "http://sws.geonames.org/".$geoIDstack[$x]."/about/rdf";
+    array_push($relation, $link);
+}
+
+/*GeoNames API query for BBOX lookup */
+$geoIDnum = count($geoIDstack);
+
+/*
+$end_time_dbsearch = microtime(true);
+$db_search_time = $end_time_dbsearch - $begin_time_dbsearch;
+$printed_search_time = "Item ".strval($itemSumInternal)."-- Searching for ".$orig_gRB."\nItem ".strval($itemSumInternal)."-- Database search time (ms): ".($db_search_time * 1000)."\n";
+$email_report = $email_report."\nTitle: ".$title."\nUUID: ".$UUID."\n";
+*/
+
+if ($geoIDnum >= 1) {
+    $loclookup = $geoIDstack[0];
+    $query = array(
+        "geonameId" => $loclookup,
+        "username" => "sgbalogh",
+    );
+
+    $cc_1 = curl_init();
+
+    curl_setopt($cc_1, CURLOPT_URL, "http://api.geonames.org/getJSON?" . http_build_query($query));
+    curl_setopt($cc_1, CURLOPT_HEADER, 0);
+    curl_setopt($cc_1, CURLOPT_RETURNTRANSFER, true);
+    $output = curl_exec($cc_1);
+    curl_close($cc_1);
+
+    $output_json = json_decode($output, $assoc = true);
+    $res_north = $output_json['bbox']['north'];
+    $res_south = $output_json['bbox']['south'];
+    $res_east = $output_json['bbox']['east'];
+    $res_west = $output_json['bbox']['west'];
+};
+
+/*end geonames */
 
 /* references logic */
 if (strpos($UUID, ".net/") !== false) {
@@ -307,43 +388,52 @@ $references = array(
 );
 */
 
+
 $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/downloadUrl\":\"".$downloadURL."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
 
-/*  polygon parser logic
- 	sample: -125.5339570045,32.7232795799,-113.9665679932,37.6842844962 as W S E N 
-*/
+/* polygon parser logic */
 
-		/* location database search */
-		
-$orig_gRB = $geoRSSBox;
-$begin_time_dbsearch = microtime(true);
+/* sample: -125.5339570045,32.7232795799,-113.9665679932,37.6842844962 as W S E N */
 
 $numlocs = count($locDB);
-for ($x = 0; $x < $numlocs; $x++) {
-	$opLoc = $locDB[$x]['location'];
-	$opBBOX = $locDB[$x]['bbox'];
-		if ($geoRSSBox == $opLoc) {
-				$geoRSSBox = $locDB[$x]['bbox'];
-		};
-};
 
-$end_time_dbsearch = microtime(true);
-$db_search_time = $end_time_dbsearch - $begin_time_dbsearch;
-$printed_search_time = "Item ".strval($itemSumInternal)."-- Searching for ".$orig_gRB."\nItem ".strval($itemSumInternal)."-- Database search time (ms): ".($db_search_time * 1000)."\n";
-$email_report = $email_report."\nTitle: ".$title."\nUUID: ".$UUID."\n";
+if ($geoRSSBox !== "0,0,0,0") {
+    /*
+    for ($x = 0; $x < $numlocs; $x++) {
+        $opLoc = $locDB[$x]['location'];
+        $opBBOX = $locDB[$x]['bbox'];
+        if ($geoRSSBox == $opLoc) {
+            $geoRSSBox = $locDB[$x]['bbox'];
+        };
+    };
+    */
 
-$posCom1 = strpos($geoRSSBox, ",");
-$posCom2 = strpos($geoRSSBox, ",", $posCom1+1);
-$posCom3 = strpos($geoRSSBox, ",", $posCom2+1);
 
-$Slen = $posCom2 - $posCom1 - 1;
-$Elen = $posCom3 - $posCom2 - 1;
-$Nlen = strlen($geoRSSBox) - $posCom3 - 1;
+    $posCom1 = strpos($geoRSSBox, ",");
+    $posCom2 = strpos($geoRSSBox, ",", $posCom1 + 1);
+    $posCom3 = strpos($geoRSSBox, ",", $posCom2 + 1);
 
-$W = substr($geoRSSBox, 0, $posCom1);
-$S = substr($geoRSSBox, $posCom1+1, $Slen);
-$E = substr($geoRSSBox, $posCom2+1, $Elen);
-$N = substr($geoRSSBox, $posCom3+1, $Nlen);
+    $Slen = $posCom2 - $posCom1 - 1;
+    $Elen = $posCom3 - $posCom2 - 1;
+    $Nlen = strlen($geoRSSBox) - $posCom3 - 1;
+
+    $W = substr($geoRSSBox, 0, $posCom1);
+    $S = substr($geoRSSBox, $posCom1 + 1, $Slen);
+    $E = substr($geoRSSBox, $posCom2 + 1, $Elen);
+    $N = substr($geoRSSBox, $posCom3 + 1, $Nlen);
+} else {
+    $N = 0;
+    $S = 0;
+    $E = 0;
+    $W = 0;
+}
+
+if (isset($res_north)) {
+    $N = $res_north;
+    $S = $res_south;
+    $E = $res_east;
+    $W = $res_east;
+} else {};
 
 $geoRSSBox = $S." ".$W." ".$N." ".$E;
 $geoRSSPolygon = $S." ".$W." ".$N." ".$W." ".$N." ".$E." ".$S." ".$E." ".$S." ".$W;

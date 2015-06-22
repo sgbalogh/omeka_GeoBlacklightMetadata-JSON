@@ -323,14 +323,22 @@ if ($geoIDnum >= 1) {
 
 
 /* references logic */
-$UUIDNetPos = strpos($UUID, ".net/");
-$UUIDNumBegin = $UUIDNetPos + 5;
-$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
-$repoFileNum = "2";
-
-$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
-$geoserverPublic = "http://geoserver.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
-$geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+if (strpos($UUID, ".net/") !== false) {
+	$UUIDNetPos = strpos($UUID, ".net/");
+	$UUIDNumBegin = $UUIDNetPos + 5;
+	$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
+	$repoFileNum = "2";
+	$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
+	$geoserverPublic = "http://geoserver.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+	$geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+} else {
+	$UUID_uniq = "NEED/UUID";
+	$repoFileNum = "9";
+	$downloadURL = "NEED UUID";
+	$geoserverPublic = "NEED UUID";
+	$geoserverRestricted = "NEED UUID";
+	};
+	
 
 if ($rights == "Public") {
 	$WFS = $geoserverPublic."wfs";
