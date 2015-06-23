@@ -277,6 +277,7 @@ for ($x = 0; $x < $numRel; $x++) {
     $comma2 = strpos($placenametrim, ",", $comma1 + 1);
     $comma3 = false;
     $loc2 = false;
+    $loc3 = false;
     	if ($comma2 !== false) {
     		$loc2 = substr($placenametrim, $comma1 + 2, ($comma2 - $comma1) - 2);
     		$loc3 = substr($placenametrim, $comma2 + 2, strlen($placenametrim));
@@ -284,13 +285,13 @@ for ($x = 0; $x < $numRel; $x++) {
     		$loc2 = substr($placenametrim, $comma1 + 2, strlen($placenametrim));
     		$loc3 = false;
     	}
-    if (($loc1 == $loc2) && $loc3 == false) {
+    if ($loc1 == "United States of America" || $loc1 == "United States") {
+    	$printsub = "United States of America";
+    } elseif (($loc1 == $loc2) && $loc3 == false) {
     	$printsub = $loc1;
     }  elseif (($loc1 == $loc2) && $loc3 !== false && $paren == " (country, state, region,...)") {
     	$printsub = $loc1.", ".$loc3;
     } elseif ($loc2 == false) {
-    	$printsub = $loc1;
-    } elseif ($loc1 == "United States of America") {
     	$printsub = $loc1;
     } else {
     	$printsub = $loc1;
