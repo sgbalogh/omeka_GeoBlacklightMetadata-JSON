@@ -282,25 +282,52 @@ $numRel = count($relation);
 
 for ($x = 0; $x < $numRel; $x++) {
     $rel = $relation[$x];
+    
     $RelColonPos = strpos($rel, ":");
     $geonameID = substr($rel, 0, $RelColonPos);
     array_push($geoIDstack, $geonameID);
+    
     $placenamelen = strlen($rel) - $RelColonPos - 2;
     $placenameorig = substr($rel, $RelColonPos+2, $placenamelen);
+    
     $RelPar1 = strpos($rel, "(");
     $RelPar2 = strpos($rel, ")");
     $paren = substr($rel, $RelPar1 - 1, ($RelPar2 - $RelPar1 + 2));
     $placenametrim = str_replace($paren, '', $placenameorig);
-    	if ($paren == " (country, state, region,...)") {
-    		$comma1 = strpos($placenametrim, ",");
-    		$comma2 = strpos($placenametrim, ",", $comma1 + 1);
-    		$remove = substr($placenametrim, $comma1, $comma2 - $comma1);
-    		$placenametrim = str_replace($remove, '', $placenametrim);
-    	};
     
-    array_push($subAddStack, $placenametrim);
-
-}
+    $comma1 = strpos($placenametrim, ",");
+    $loc1 = substr($placenametrim, 0, $comma1);
+    $comma2 = strpos($placenametrim, ",", $comma1 + 1);
+    $comma3 = false;
+    $loc2 = false;
+    	if ($comma2 !== false) {
+    		$loc2 = substr($placenametrim, $comma1 + 2, ($comma2 - $comma1) - 2);
+    		$loc3 = substr($placenametrim, $comma2 + 2, strlen($placenametrim));
+    	} else {
+    		$loc2 = substr($placenametrim, $comma1 + 2, strlen($placenametrim));
+    		$loc3 = false;
+    	}
+    if (($loc1 == $loc2) && $loc3 == false) {
+    	$printsub = $loc1;
+    }  elseif (($loc1 == $loc2) && $loc3 !== false && $paren == " (country, state, region,...)") {
+    	$printsub = $loc1.", ".$loc3;
+    } elseif ($loc2 == false) {
+    	$printsub = $loc1;
+    } elseif ($loc1 == "United States of America") {
+    	$printsub = $loc1;
+    } else {
+    	$printsub = $loc1;
+    		if ($loc2 !== false) {
+    		$printsub = $printsub.", ".$loc2;
+    			if ($loc3 !== false) {
+    			$printsub = $printsub.", ".$loc3;
+    			}
+    		}
+    	}
+     
+		
+		array_push($subAddStack, $printsub);
+};
 
 $numSubAddStack = count($subAddStack);
 
