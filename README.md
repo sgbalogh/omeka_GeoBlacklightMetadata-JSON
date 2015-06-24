@@ -26,4 +26,6 @@ Download the most current version from the `master` branch, rename the folder to
 
 GeoBlacklight Metadata requires that you provide a path to jeoQuery and Live Query.
 
+Note: the API-call to Geonames uses the PHP curl_init() function. If your server doesn't already have that installed (and you use apt-get), just run: `sudo apt-get install php5-curl`.
+
 
