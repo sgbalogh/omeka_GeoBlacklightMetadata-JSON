@@ -24,7 +24,7 @@ In order to install this plugin, you must be using Omeka 2.3+ and have Dublin Co
 Download the most current version from the `master` branch, rename the folder to 
 `GeoBlacklightMetadata` and upload to your `/plugins` directory.
 
-GeoBlacklight Metadata requires that you provide a path to jeoQuery and Live Query.
+GeoBlacklight Metadata requires that you provide a path to jeoQuery and Live Query. Before installing (!), make sure to have the two JS scripts hosted in a web-accessible directory, and change the [URLs specified](https://github.com/sgbalogh/omeka_GeoBlacklightMetadata-JSON/blob/master/GeoBlacklightMetadataPlugin.php#L80) in `GeoBlacklightMetadataPlugin.php`.
 
 Note: the API-call to Geonames uses the PHP curl_init() function. If your server doesn't already have that installed (and you use apt-get), just run: `sudo apt-get install php5-curl`.
 
