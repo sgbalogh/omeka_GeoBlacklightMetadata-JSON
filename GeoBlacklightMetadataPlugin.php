@@ -77,8 +77,8 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     public function  hookAdminHead($args) {
-  queue_js_url('http://pretentiobot.org/demo/apicopy/jeoquery.js');
-  queue_js_url('http://pretentiobot.org/demo/apicopy/jquery.livequery.min.js');
+  queue_js_url('http://52.1.104.201/js/jeoquery.js');
+  queue_js_url('http://52.1.104.201/js/jquery.livequery.min.js');
   queue_js_string("
   
 
