@@ -26,6 +26,8 @@ Download the most current version from the `master` branch, rename the folder to
 
 GeoBlacklight Metadata requires that you provide a path to jeoQuery and Live Query. Before installing (!), make sure to have the two JS scripts hosted in a web-accessible directory, and change the [URLs specified](https://github.com/sgbalogh/omeka_GeoBlacklightMetadata-JSON/blob/master/GeoBlacklightMetadataPlugin.php#L80&#L81) in `GeoBlacklightMetadataPlugin.php`.
 
+The Geoname API auto-suggest feature operates, by default, on the Dublin Core field "Relation", and on all additional input fields under that element. To alter the element targeted by the jQuery auto-suggest function, changeall references to the element [here](https://github.com/sgbalogh/omeka_GeoBlacklightMetadata-JSON/blob/master/GeoBlacklightMetadataPlugin.php#L90-L112). 
+
 Note: the API-call to Geonames uses the PHP curl_init() function. If your server doesn't already have that installed (and you use apt-get), just run: `sudo apt-get install php5-curl`.
 
 
