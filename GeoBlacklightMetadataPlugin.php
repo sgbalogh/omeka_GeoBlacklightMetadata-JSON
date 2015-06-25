@@ -184,7 +184,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
     public function dc_rights_edit($components, $args)
     {
-        $components['comment'] = "Select either \"public\" or \"private.\" If you have used data that comes from a protected or proprietary source, you must select \"private.\"";
+        $components['comment'] = "Select either \"public\" or \"restricted.\" If you have used data that comes from a protected or proprietary source, you must select \"restricted.\"";
         return $components;
     }
     public function dc_provenance_edit($components, $args)
