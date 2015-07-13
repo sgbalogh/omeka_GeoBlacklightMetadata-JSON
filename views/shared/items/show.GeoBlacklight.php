@@ -3,7 +3,7 @@
 include 'location_DB.php';
 
 function deriveSlug ($string) {
-    $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
+    $junkWords = array("for ","in "," on ","the "," a "," A ","A "," an "," use ","with"," of ");
     $lessjunk = str_replace($junkWords, '', $string);
 	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $lessjunk);
 	$flatten = preg_replace('/\s+/', '', $clean);
@@ -45,8 +45,6 @@ $geoRSSPoint = metadata($item, array('GeoBlacklight', 'GeoRSS Point'), array('al
 $geoRSSPolygon = metadata($item, array('GeoBlacklight', 'GeoRSS Polygon'), array('all'=>true, 'no_escape'=>true));
 $solrGeom = metadata($item, array('GeoBlacklight', 'Apache Solr Geometry'), array('all'=>true, 'no_escape'=>true));
 $solrYear = metadata($item, array('GeoBlacklight', 'Apache Solr Year'), array('all'=>true, 'no_escape'=>true));
-
-	
 
 
 if (count($identifier) == 1) {
@@ -105,9 +103,9 @@ if (count($type) == 1) {
 
 if (count($publisher) == 1) {
 	$publisher = $publisher[0];
-} /*elseif (count($publisher) == 0) {
-	$publisher = "";
-	};*/
+} elseif (count($publisher) == 0) {
+	$publisher = "Unknown";
+	};
 
 if (count($creator) == 1) {
 	$creator = $creator[0];
@@ -217,7 +215,7 @@ if (count($solrYear) == 1) {
 	};
 
 if ($slug == "") {
-		$slug = deriveSlug($title);
+		$slug = deriveSlug($publisher)."_".deriveSlug($title);
 		};
 
 if (is_array($layerID)) {
