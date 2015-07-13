@@ -184,7 +184,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
     public function dc_rights_edit($components, $args)
     {
-        $components['comment'] = "Select either \"public\" or \"restricted.\" If you have used data that comes from a protected or proprietary source, you must select \"restricted.\"";
+        $components['comment'] = "Select either \"Public\" or \"Restricted.\" If you have used data that comes from a protected or proprietary source, you must select \"Restricted.\"";
         return $components;
     }
     public function dc_provenance_edit($components, $args)
@@ -219,7 +219,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
     public function dc_relation_edit($components, $args)
     {
-        $components['comment'] = "Complete this field by entering the URI associated with the seven-digit GeoNames number. The format is as follows:<br><tt>http://sws.geonames.org/#######/about/rdf</tt><br><br>Separate multiple names into individual fields. If you have not identified any place names for your layer, leave this field blank.";
+        $components['comment'] = "Associate as many place names to your layer as make sense for discovery of the data. Separate each location by adding fields with the \"Add Input\" button. Begin with the most general location; the first input will be used to extract the \"bounding box\" for the record.<br><br>When you begin typing in the input box, you should see autocomplete suggestions from the <a href=\"http://www.geonames.org/v3\" target=\"_blank\">GeoNames</a> ontology.<br><br>Focus primarily on the names of administrative units but also include other place names. Strive to have at least 3-4 place names. If you have any doubts, leave this field blank.<br><br>Separate multiple names into individual fields.";
         return $components;
     }
     public function dc_subject_edit($components, $args)
@@ -239,7 +239,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
     public function dc_temporal_edit($components, $args)
     {
-        $components['comment'] = "Indicate the date or date range of the data associated with the content. Use only 4-digit years (<tt>2015</tt> or <tt>2012-2015</tt>)";
+        $components['comment'] = "Indicate the date or date range of the data associated with the content. Use only 4-digit years (<tt>2015</tt> or <tt>2012-2015</tt>). For date ranges, make sure the two years are separated by a single hyphen (<tt>2012-2015</tt>).";
         return $components;
     }
     public function dc_issued_edit($components, $args)
@@ -255,7 +255,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     public function geoblacklight_grbox_edit($components, $args)
     {
         $components['description'] = "Bounding box as maximum values for <tt>S W N E</tt><br><br>";
-        $components['comment'] = "Provide the coordinates for the area your layer covers. To do this, use <a href=\"http://boundingbox.klokantech.com/\" target=\"_blank\">this bounding box tool</a> and draw a box around the total area your layer represents. Toggle down to CSV, copy the value to your clipboard, and then paste the value here. Finally, remove the commas and leave white spaces in between the numbers.";
+        $components['comment'] = "By default, bounding box information will be extracted from GeoNames based on the first location you provided. If you wish to override the supplied bounding box coordinates for a custon one, use <a href=\"http://boundingbox.klokantech.com/\" target=\"_blank\">this bounding box tool</a> and draw a box around the total area your layer represents. Toggle down to CSV RAW format, copy the value to your clipboard, and then paste the value here with no alterations.";
         return $components;
     }
     public function geoblacklight_georsspoly_description_edit($components, $args)

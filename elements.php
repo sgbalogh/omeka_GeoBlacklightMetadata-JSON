@@ -10,7 +10,7 @@
         array(
             'label' => 'uuid',
             'name'  => 'UUID',
-            'description' => 'The persistent URL',
+            'description' => 'The persistent Handle System URL',
             'comment' => 'If you are depositing a data set, leave this field blank.',
             'data_type'   => 'Tiny Text',
         ),
@@ -90,6 +90,7 @@
             'label' => 'SolrYear',
             'name'  => 'Apache Solr Year',
             'description' =>'Year for Solr.',
+            'comment' => 'This is automatically set to the value entered in Temporal Coverage. If you entered a date range, this will be the first year in that range. If you prefer to use a different date, enter it below to override.',
             'data_type'   => 'Tiny Text',
         ),
     );
