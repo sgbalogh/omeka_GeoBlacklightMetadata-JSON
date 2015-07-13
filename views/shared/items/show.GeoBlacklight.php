@@ -216,22 +216,16 @@ if (count($solrYear) == 1) {
 	$solrYear = "";
 	};
 
-if (is_array($slug)) {
-	if ($slug[0] == "OVERRIDE") {
-		$slug = $slug[1];
-		} else {
+if ($slug == "") {
 		$slug = deriveSlug($title);
 		};
-} else {
-	$slug = deriveSlug($title);
-};
 
 if (is_array($layerID)) {
 	if ($layerID[0] == "OVERRIDE") {
 		$layerID = $layerID[1];
 		};
 } else {
-	$layerID = $GeoServerWS.":".deriveSlug($title);
+	$layerID = $GeoServerWS.":".$slug;
 };
 
 if (is_array($identifier)) {
@@ -362,8 +356,8 @@ if (strpos($UUID, ".net/") !== false) {
 	$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
 	$repoFileNum = "2";
 	$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
-	$geoserverPublic = "http://geoserver.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
-	$geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+	$geoserverPublic = "http://52.1.104.201:8080/geoserver/".$GeoServerWS."/";
+	$geoserverRestricted = "http://52.1.104.201:8080/geoserver/".$GeoServerWS."/";
 } else {
 	$UUID_uniq = "NEED/UUID";
 	$repoFileNum = "9";
@@ -401,6 +395,10 @@ $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/down
 
 $numlocs = count($locDB);
 
+if ($spatialCoverage[0] == "United States of America") {
+ 	$geoRSSBox = "-170.1769013405,24.7073204053,-64.5665435791,71.6032483233";
+ };
+
 if ($geoRSSBox !== "0,0,0,0") {
     /*
     for ($x = 0; $x < $numlocs; $x++) {
@@ -432,11 +430,12 @@ if ($geoRSSBox !== "0,0,0,0") {
     $W = 0;
 }
 
-if ($res_north !== 0) {
+
+if ($res_north !== 0 && empty($geoRSSBox)) {
     $N = $res_north;
     $S = $res_south;
     $E = $res_east;
-    $W = $res_east;
+    $W = $res_west;
 } else {};
 
 $geoRSSBox = $S." ".$W." ".$N." ".$E;
