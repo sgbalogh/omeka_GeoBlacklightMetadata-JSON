@@ -63,9 +63,9 @@ if (count($title) == 1) {
 
 if (count($description) == 1) {
 	$description = $description[0];
-} elseif (count($description) == 0) {
+} /*elseif (count($description) == 0) {
 	$description = "";
-	};
+	};*/
 
 if (count($rights) == 1) {
 	$rights = $rights[0];
@@ -87,33 +87,33 @@ if (count($references) == 1) {
 
 if (count($format) == 1) {
 	$format = $format[0];
-} elseif (count($format) == 0) {
+} /*elseif (count($format) == 0) {
 	$format = "";
-	};
+	};*/
 
 if (count($language) == 1) {
 	$language = $language[0];
-} elseif (count($language) == 0) {
+} /*elseif (count($language) == 0) {
 	$language = "";
-	};
+	};*/
 
 if (count($type) == 1) {
 	$type = $type[0];
-} elseif (count($type) == 0) {
+} /*elseif (count($type) == 0) {
 	$type = "";
-	};
+	};*/
 
 if (count($publisher) == 1) {
 	$publisher = $publisher[0];
-} elseif (count($publisher) == 0) {
+} /*elseif (count($publisher) == 0) {
 	$publisher = "";
-	};
+	};*/
 
 if (count($creator) == 1) {
 	$creator = $creator[0];
-} elseif (count($creator) == 0) {
+} /*elseif (count($creator) == 0) {
 	$creator = "";
-	};
+	};*/
 
 /*
 if (count($subject) == 1) {
@@ -125,9 +125,9 @@ if (count($subject) == 1) {
 
 if (count($dateIssued) == 1) {
 	$dateIssued = $dateIssued[0];
-} elseif (count($dateIssued) == 0) {
+} /*elseif (count($dateIssued) == 0) {
 	$dateIssued = "";
-	};
+	};*/
 
 if (count($temporalCoverage) == 1) {
 	$temporalCoverage = $temporalCoverage[0];
@@ -152,9 +152,9 @@ if (count($relation) == 1) {
 */
 if (count($isPartOf) == 1) {
 	$isPartOf = $isPartOf[0];
-} elseif (count($isPartOf) == 0) {
+} /*elseif (count($isPartOf) == 0) {
 	$isPartOf = "";
-	};
+	};*/
 
 if (count($UUID) == 1) {
 	$UUID = $UUID[0];
