@@ -87,10 +87,10 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
   				
                 jeoquery.defaultData.userName = 'sgbalogh';
             
-                $(\"#Elements-46-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});  
+                $(\"#Elements-81-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});  
                 
                  	var elementname = function(num) {
-                 	return \"Elements-46-\"+num+\"-text\";
+                 	return \"Elements-81-\"+num+\"-text\";
                  	};
                  	
                  	var checkexist = function(num) {
@@ -102,7 +102,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
                  	var elementtag = function(num) {
                  		return \"#\" + elementname(num);
                  	};
-                		$(\"#add_element_46\").livequery(function(){
+                		$(\"#add_element_81\").livequery(function(){
                 			counter = 0;
                 			while (checkexist(counter)) {
                 			var activateinput = elementtag(counter);
@@ -219,7 +219,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
     public function dc_relation_edit($components, $args)
     {
-        $components['comment'] = "Associate as many place names to your layer as make sense for discovery of the data. Separate each location by adding fields with the \"Add Input\" button. Begin with the most general location; the first input will be used to extract the \"bounding box\" for the record.<br><br>When you begin typing in the input box, you should see autocomplete suggestions from the <a href=\"http://www.geonames.org/v3\" target=\"_blank\">GeoNames</a> ontology.<br><br>Focus primarily on the names of administrative units but also include other place names. Strive to have at least 3-4 place names. If you have any doubts, leave this field blank.<br><br>Separate multiple names into individual fields.";
+        $components['comment'] = "This should be provided automatically from any inputs in \"Spatial Coverage\".";
         return $components;
     }
     public function dc_subject_edit($components, $args)
@@ -234,7 +234,7 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
     public function dc_spatial_edit($components, $args)
     {
-        $components['comment'] = "Associate as many place names to your layer as make sense for discovery of the data. Focus primarily on the names of administrative units but also include other place names. Strive to have at least 3-4 place names. All names must align with the GeoNames ontology. If you need help finding a specific place name, <a href=\"http://www.geonames.org/v3\" target=\"_blank\">click here</a> and search via the map. If you have any doubts, leave this field blank.";
+        $components['comment'] = "Associate as many place names to your layer as make sense for discovery of the data. Separate each location by adding fields with the \"Add Input\" button. Begin with the most general location; the first input will be used to extract the \"bounding box\" for the record.<br><br>When you begin typing in the input box, you should see autocomplete suggestions from the <a href=\"http://www.geonames.org/v3\" target=\"_blank\">GeoNames</a> ontology.<br><br>Focus primarily on the names of administrative units but also include other place names. Strive to have at least 3-4 place names. If you have any doubts, leave this field blank.<br><br>Separate multiple names into individual fields.";
         return $components;
     }
     public function dc_temporal_edit($components, $args)
