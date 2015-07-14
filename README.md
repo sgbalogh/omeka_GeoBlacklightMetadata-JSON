@@ -1,7 +1,7 @@
 # GeoBlacklight Metadata-JSON plugin for Omeka
 
 ###Overview
-This repo is a plugin for [Omeka](http://omeka.org/) (2.3+) which fascilitates the collection of metadata about geospatial datasets, in accordance with the [GeoBlacklight Schema](https://github.com/geoblacklight/geoblacklight-schema). For background on the GeoBlacklight project, [see here](http://journal.code4lib.org/articles/9710).
+This repo is a plugin for [Omeka](http://omeka.org/) (2.3+) which facilitates the collection of metadata about geospatial datasets, in accordance with the [GeoBlacklight Schema](https://github.com/geoblacklight/geoblacklight-schema). For background on the GeoBlacklight project, [see here](http://journal.code4lib.org/articles/9710).
 
 This plugin allows users to submit metadata––using Dublin Core, GeoRSS, and GeoBlacklight-specific inputs––and generate JSON-formatted records for use in Solr with the [GeoBlacklight](http://geoblacklight.org/) dataset discovery platform.
 
@@ -24,10 +24,6 @@ In order to install this plugin, you must be using Omeka 2.3+ and have Dublin Co
 Download the most current version from the `master` branch, rename the folder to 
 `GeoBlacklightMetadata` and upload to your `/plugins` directory.
 
-GeoBlacklight Metadata requires that you provide a path to jeoQuery and Live Query. Before installing (!), make sure to have the two JS scripts hosted in a web-accessible directory, and change the [URLs specified](https://github.com/sgbalogh/omeka_GeoBlacklightMetadata-JSON/blob/master/GeoBlacklightMetadataPlugin.php#L80&#L81) in `GeoBlacklightMetadataPlugin.php`.
-
-The Geoname API auto-suggest feature operates, by default, on the Dublin Core field "Relation", and on all additional input fields under that element. To alter the element targeted by the jQuery auto-suggest function, changeall references to the element [here](https://github.com/sgbalogh/omeka_GeoBlacklightMetadata-JSON/blob/master/GeoBlacklightMetadataPlugin.php#L90-L112). 
-
-Note: the API-call to Geonames uses the PHP curl_init() function. If your server doesn't already have that installed (and you use apt-get), just run: `sudo apt-get install php5-curl`.
+GeoBlacklight Metadata requires that you provide a path to jeoQuery and Live Query.
 
 
