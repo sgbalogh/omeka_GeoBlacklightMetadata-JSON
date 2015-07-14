@@ -1,33 +1,26 @@
 <?php
 
-/*options for config file:
-
-hard code institution? or default if none supplied?: TRUE
-institution — provenance: NYU
-
-WMS endpoint (public):
-WMS endpoint (restricted):
-WFS endpoint (public):
-WFS endpoint (restricted):
-geoserver_workspace:
-
-Slug deriver with publisher prepend?
-Use UUID parsing for handle, or just supply own?
-
-web-accessible location of jeoQuery file:
-web-accessible location of live query file:*/
-
+/*If set to true, records will all contain the Institution specified below for
+"dct_provenance_s"; if  */
 $HardCodeInstitution_b = true;
 $DefaultInstitution_b = true;
 $Institution = "NYU";
 
-$jeoQueryLoc = "";
-$LiveQueryLoc = "";
+/*GeoNames customizations; enter the WEB-ACCESSIBLE paths to the two necessary JS files,
+and your GeoNames API username (please don't use mine!) */
+$jeoQueryLoc = "http://52.1.104.201/js/jeoquery.js";
+$LiveQueryLoc = "http://52.1.104.201/js/jquery.livequery.min.js";
+$GeoNamesUserID = "sgbalogh";
 
+/*Slug deriver with publisher prepend? */
 $SlugPrependPublisher_b = true;
 
+/*Use UUID parsing for handle, or just supply own? NOTE: UUID parsing only works for NYU
+handle.net UUIDs –– this will use the slug (derived or provided by user) to infer the
+URL of the .zip file for direct download from NYU FDA */
 $UUIDParsing_b = true;
 
+/*Endpoint URLs for GeoServer and GeoServer workspace names (which will directly prepend layerID) */
 $GeoserverEndpointPublic = "http://52.1.104.201:8080/geoserver/nyu_sdr/";
 $GeoserverEndpointRestricted = "http://52.1.104.201:8080/geoserver/nyu_sdr/";
 $GeoserverWorkspacePublic = "nyu_sdr";
@@ -44,14 +37,5 @@ $email_b = false;
 
 /* E-mail destination for analytic reports */
 $email_me = "me@domain.net";
-
-
-
-
-
-
-
-
-
 
 ?>
