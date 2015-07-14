@@ -138,7 +138,6 @@ if (strpos($temporalCoverage,'-')) {
 	$year1 = substr($temporalCoverage, 0, $dashpos);
 	$year2 = substr($temporalCoverage, $dashpos+1, strlen($temporalCoverage));
 	$temporalCoverage = array($year1, $year2);
-	
 }
 
 /*
@@ -254,22 +253,22 @@ if (in_array($language, $engSynonyms)) {
 $geoIDstack = array();
 $subAddStack = array();
 
-$numRel = count($relation);
+$numPlace = count($spatialCoverage);
 
 
-for ($x = 0; $x < $numRel; $x++) {
-    $rel = $relation[$x];
+for ($x = 0; $x < $numPlace; $x++) {
+    $Place = $spatialCoverage[$x];
     
-    $RelColonPos = strpos($rel, ":");
-    $geonameID = substr($rel, 0, $RelColonPos);
+    $PlaceColonPos = strpos($Place, ":");
+    $geonameID = substr($Place, 0, $PlaceColonPos);
     array_push($geoIDstack, $geonameID);
     
-    $placenamelen = strlen($rel) - $RelColonPos - 2;
-    $placenameorig = substr($rel, $RelColonPos+2, $placenamelen);
+    $placenamelen = strlen($Place) - $PlaceColonPos - 2;
+    $placenameorig = substr($Place, $PlaceColonPos+2, $placenamelen);
     
-    $RelPar1 = strpos($rel, "(");
-    $RelPar2 = strpos($rel, ")");
-    $paren = substr($rel, $RelPar1 - 1, ($RelPar2 - $RelPar1 + 2));
+    $PlacePar1 = strpos($Place, "(");
+    $PlacePar2 = strpos($Place, ")");
+    $paren = substr($Place, $PlacePar1 - 1, ($PlacePar2 - $PlacePar1 + 2));
     $placenametrim = str_replace($paren, '', $placenameorig);
     
     $comma1 = strpos($placenametrim, ",");
@@ -308,6 +307,7 @@ for ($x = 0; $x < $numRel; $x++) {
 };
 /* end rewrite */
 
+$spatialCoverage = array();
 $numSubAddStack = count($subAddStack);
 
 for ($x = 0; $x < $numSubAddStack; $x++) {
@@ -317,7 +317,7 @@ for ($x = 0; $x < $numSubAddStack; $x++) {
 
 $relation = array();
 
-for ($x = 0; $x < $numRel; $x++) {
+for ($x = 0; $x < $numPlace; $x++) {
     $link = "http://sws.geonames.org/".$geoIDstack[$x]."/about/rdf";
     array_push($relation, $link);
 }
@@ -351,7 +351,6 @@ if ($geoIDnum >= 1) {
 };
 
 /*end geonames */
-
 
 
 
@@ -401,10 +400,10 @@ $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/down
 
 $numlocs = count($locDB);
 
-if ($spatialCoverage[0] == "United States of America") {
+if (isset($spatialCoverage[0]) && $spatialCoverage[0] == "United States of America") {
  	$geoRSSBox = "-170.1769013405,24.7073204053,-64.5665435791,71.6032483233";
  };
-
+$flag = false;
 if ($geoRSSBox !== "0,0,0,0") {
     /*
     for ($x = 0; $x < $numlocs; $x++) {
@@ -429,6 +428,7 @@ if ($geoRSSBox !== "0,0,0,0") {
     $S = substr($geoRSSBox, $posCom1 + 1, $Slen);
     $E = substr($geoRSSBox, $posCom2 + 1, $Elen);
     $N = substr($geoRSSBox, $posCom3 + 1, $Nlen);
+    $flag = true;
 } else {
     $N = 0;
     $S = 0;
@@ -436,8 +436,7 @@ if ($geoRSSBox !== "0,0,0,0") {
     $W = 0;
 }
 
-
-if ($res_north !== 0 && empty($geoRSSBox)) {
+if ($res_north !== 0 && $flag == false) {
     $N = $res_north;
     $S = $res_south;
     $E = $res_east;
@@ -480,4 +479,5 @@ $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].
 "georss_polygon_s": <?php echo(json_encode($geoRSSPolygon)); ?>,
 "solr_geom": <?php echo(json_encode($solrGeom)); ?>,
 "solr_year_i": <?php echo(json_encode(intval($solrYear))); ?>
+
 }
