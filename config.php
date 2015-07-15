@@ -19,6 +19,9 @@ $SlugPrependPublisher_b = true;
 handle.net UUIDs –– this will use the slug (derived or provided by user) to infer the
 URL of the .zip file for direct download from NYU FDA */
 $UUIDParsing_b = true;
+/*Insert link to direct download zip file (using slug that was provided or derived)?
+NOTE: Only set this to true if you are using UUID parsing for NYU FDA identifiers! */
+$DirectDownloadLink = true;
 
 /*Endpoint URLs for GeoServer and GeoServer workspace names (which will directly prepend layerID) */
 $GeoserverEndpointPublic = "http://52.1.104.201:8080/geoserver/nyu_sdr/";
