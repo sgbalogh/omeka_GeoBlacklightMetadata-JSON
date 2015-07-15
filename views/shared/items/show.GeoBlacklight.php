@@ -1,6 +1,7 @@
 <?php /* REQUIRES PHP 5.2 OR LATER, on account of json_encode() function. */ ?>
 <?php
 include 'location_DB.php';
+include 'config.php';
 
 function deriveSlug ($string) {
     $junkWords = array("for ","in "," on ","the "," a "," A ","A "," an "," use ","with"," of ");
@@ -10,9 +11,6 @@ function deriveSlug ($string) {
 	return $flatten;
 	};
 
-
-/* system variables */
-$GeoServerWS = "nyu_sdr";
 
 /* metadata variables */
 
@@ -71,11 +69,17 @@ if (count($rights) == 1) {
 	$rights = "Restricted";
 	};
 
-if (count($provenance) == 1) {
+if ($HardCodeInstitution_b) {
+	$provenance = $Institution;
+	}
+
+if ($DefaultInstitution_b && !$HardCodeInstitution_b) {
+	if (count($provenance) == 1) {
 	$provenance = $provenance[0];
-} elseif (count($provenance) == 0) {
-	$provenance = "NYU";
+		} elseif (count($provenance) == 0) {
+		$provenance = $Institution;
 	};
+}
 
 if (count($references) == 1) {
 	$references = $references[0];
@@ -221,9 +225,21 @@ if (count($solrYear) == 1) {
 	$solrYear = $temporalCoverage[0];
 	};
 
-if ($slug == "") {
+if ($SlugPrependPublisher_b) {
+	if ($slug == "") {
 		$slug = deriveSlug($publisher)."_".deriveSlug($title);
 		};
+	} else {
+	if ($slug == "") {
+		$slug = deriveSlug($title);
+		};
+	}
+
+if ($rights == "Public") {
+	$GeoServerWS = $GeoserverWorkspacePublic;
+	} else {
+	$GeoServerWS = $GeoserverWorkspaceRestricted;
+	}
 
 if (is_array($layerID)) {
 	if ($layerID[0] == "OVERRIDE") {
@@ -355,21 +371,23 @@ if ($geoIDnum >= 1) {
 
 
 /* references logic */
-if (strpos($UUID, ".net/") !== false) {
-	$UUIDNetPos = strpos($UUID, ".net/");
-	$UUIDNumBegin = $UUIDNetPos + 5;
-	$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
-	$repoFileNum = "2";
-	$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
-	$geoserverPublic = "http://52.1.104.201:8080/geoserver/".$GeoServerWS."/";
-	$geoserverRestricted = "http://52.1.104.201:8080/geoserver/".$GeoServerWS."/";
+$geoserverPublic = $GeoserverEndpointPublic.$GeoServerWS."/";
+$geoserverRestricted = $GeoserverEndpointRestricted.$GeoServerWS."/";
+		
+if ($UUIDParsing_b) {
+	if (strpos($UUID, "handle.net/") !== false) {
+		$UUIDNetPos = strpos($UUID, ".net/");
+		$UUIDNumBegin = $UUIDNetPos + 5;
+		$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
+		$repoFileNum = "2";
+		$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
+	} else {
+		$repoFileNum = "9";
+		$downloadURL = "UUID IMPROPERLY PARSED: MAKE SURE TO USE HANDLE.NET OR DISABLE PARSING";
+		};
 } else {
-	$UUID_uniq = "NEED/UUID";
-	$repoFileNum = "9";
-	$downloadURL = "NEED UUID";
-	$geoserverPublic = "NEED UUID";
-	$geoserverRestricted = "NEED UUID";
-	};
+	
+	}
 	
 
 if ($rights == "Public") {
@@ -391,8 +409,11 @@ $references = array(
 "http://www.opengis.net/def/serviceType/ogc/wms" => $WMS,
 );
 */
-
+if ($UUIDParsing_b && $DirectDownloadLink_b) {
 $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/downloadUrl\":\"".$downloadURL."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
+} else {
+$references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
+}
 
 /* polygon parser logic */
 
