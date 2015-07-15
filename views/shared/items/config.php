@@ -51,17 +51,20 @@
 		
 		
 
-/* THE FOLLOWING FOUR VARIABLES HAVE YET TO BE SUPPORTED IN BROWSE.PHP */
+/* THE FOLLOWING FIVE VARIABLES ONLY APPLY FOR BROWSE.PHP REQUESTS: */
 	/* Enable record production analytics for API requests handled by browse.php? */
 		$log_b = false;
 		
-	/* Location of log for record analytics */
-		$speedlog = "/PATH/TO/YOUR/LOG.TXT";
+		/* Location of log for record analytics */
+			$speedlog = "/var/www/html/logs/log.txt";
 
 	/* E-mail the report in addition to saving to text? */
 		$email_b = false;
 
-	/* E-mail destination for analytic reports */
-		$email_me = "me@domain.net";
+		/* E-mail origin for analytic reports */
+			$from_email = "me@example.com";
+		
+		/* E-mail destination for analytic reports */
+			$to_email = "me@example.com";
 
 ?>
