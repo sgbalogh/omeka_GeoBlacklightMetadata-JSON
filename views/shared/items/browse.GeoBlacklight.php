@@ -2,14 +2,16 @@
 <?php
 $entire_request_begin = microtime(true);
 include 'location_DB.php';
-include 'localvars.php';
-$runningtotal = 0;
-/*$log = fopen($speedlog, "a") or die("Unable to open file!");*/
-$begin_time = getdate();
-$begin_statement = "Beginning record export, on ".$begin_time['mon']."-".$begin_time['mday']."-".$begin_time['year'].", at ".$begin_time['hours'].":".$begin_time['minutes'].":".$begin_time['seconds']." UTC\n//////////////////////////////////////////////\n\n";
-/*fwrite($log, $begin_statement);*/
-$email_report = $begin_statement;
+include 'config.php';
 
+$runningtotal = 0;
+if ($log_b) {
+	$log = fopen($speedlog, "a") or die("Unable to open file!");
+	$begin_time = getdate();
+	$begin_statement = "Beginning record export, on ".$begin_time['mon']."-".$begin_time['mday']."-".$begin_time['year'].", at ".$begin_time['hours'].":".$begin_time['minutes'].":".$begin_time['seconds']." UTC\n//////////////////////////////////////////////\n\n";
+	fwrite($log, $begin_statement);
+	$email_report = $begin_statement;
+};
 
 function deriveSlug ($string) {
     $junkWords = array("for ","in ","on ","the "," a "," A ","A "," an "," use ","with"," of ");
@@ -36,12 +38,11 @@ if ($item) {
 	$itemSumInternal = $itemSumInternal + 1;
 	};
 
-/* system variables */
-$GeoServerWS = "nyu_sdr";
-
 /* metadata variables */
 
 
+
+$item = get_current_record('item');
 
 $identifier = metadata($item, array('Dublin Core', 'Identifier'), array('all'=>true, 'no_escape'=>true));
 $title = metadata($item, array('Dublin Core', 'Title'), array('all'=>true, 'no_escape'=>true));
@@ -71,8 +72,6 @@ $geoRSSPolygon = metadata($item, array('GeoBlacklight', 'GeoRSS Polygon'), array
 $solrGeom = metadata($item, array('GeoBlacklight', 'Apache Solr Geometry'), array('all'=>true, 'no_escape'=>true));
 $solrYear = metadata($item, array('GeoBlacklight', 'Apache Solr Year'), array('all'=>true, 'no_escape'=>true));
 
-	
-
 
 if (count($identifier) == 1) {
 	$identifier = $identifier[0];
@@ -88,9 +87,9 @@ if (count($title) == 1) {
 
 if (count($description) == 1) {
 	$description = $description[0];
-} elseif (count($description) == 0) {
+} /*elseif (count($description) == 0) {
 	$description = "";
-	};
+	};*/
 
 if (count($rights) == 1) {
 	$rights = $rights[0];
@@ -98,11 +97,17 @@ if (count($rights) == 1) {
 	$rights = "Restricted";
 	};
 
-if (count($provenance) == 1) {
+if ($HardCodeInstitution_b) {
+	$provenance = $Institution;
+	}
+
+if ($DefaultInstitution_b && !$HardCodeInstitution_b) {
+	if (count($provenance) == 1) {
 	$provenance = $provenance[0];
-} elseif (count($provenance) == 0) {
-	$provenance = "NYU";
+		} elseif (count($provenance) == 0) {
+		$provenance = $Institution;
 	};
+}
 
 if (count($references) == 1) {
 	$references = $references[0];
@@ -112,33 +117,33 @@ if (count($references) == 1) {
 
 if (count($format) == 1) {
 	$format = $format[0];
-} elseif (count($format) == 0) {
+} /*elseif (count($format) == 0) {
 	$format = "";
-	};
+	};*/
 
 if (count($language) == 1) {
 	$language = $language[0];
-} elseif (count($language) == 0) {
+} /*elseif (count($language) == 0) {
 	$language = "";
-	};
+	};*/
 
 if (count($type) == 1) {
 	$type = $type[0];
-} elseif (count($type) == 0) {
+} /*elseif (count($type) == 0) {
 	$type = "";
-	};
+	};*/
 
 if (count($publisher) == 1) {
 	$publisher = $publisher[0];
 } elseif (count($publisher) == 0) {
-	$publisher = "";
+	$publisher = "Unknown";
 	};
 
 if (count($creator) == 1) {
 	$creator = $creator[0];
-} elseif (count($creator) == 0) {
+} /*elseif (count($creator) == 0) {
 	$creator = "";
-	};
+	};*/
 
 /*
 if (count($subject) == 1) {
@@ -150,15 +155,22 @@ if (count($subject) == 1) {
 
 if (count($dateIssued) == 1) {
 	$dateIssued = $dateIssued[0];
-} elseif (count($dateIssued) == 0) {
+} /*elseif (count($dateIssued) == 0) {
 	$dateIssued = "";
-	};
+	};*/
 
 if (count($temporalCoverage) == 1) {
-	$temporalCoverage = $temporalCoverage[0];
+	$temporalCoverage = array($temporalCoverage[0]);
 } elseif (count($temporalCoverage) == 0) {
-	$temporalCoverage = "";
+	$temporalCoverage = array();
 	};
+	
+if (strpos($temporalCoverage[0],'-')) {
+	$dashpos = strpos($temporalCoverage[0],'-');
+	$year1 = substr($temporalCoverage[0], 0, $dashpos);
+	$year2 = substr($temporalCoverage[0], $dashpos+1, strlen($temporalCoverage[0]));
+	$temporalCoverage = array($year1, $year2);
+}
 
 /*
 if (count($spatialCoverage) == 1) {
@@ -177,9 +189,9 @@ if (count($relation) == 1) {
 */
 if (count($isPartOf) == 1) {
 	$isPartOf = $isPartOf[0];
-} elseif (count($isPartOf) == 0) {
+} /*elseif (count($isPartOf) == 0) {
 	$isPartOf = "";
-	};
+	};*/
 
 if (count($UUID) == 1) {
 	$UUID = $UUID[0];
@@ -238,25 +250,31 @@ if (count($solrGeom) == 1) {
 if (count($solrYear) == 1) {
 	$solrYear = $solrYear[0];
 } elseif (count($solrYear) == 0) {
-	$solrYear = "";
+	$solrYear = $temporalCoverage[0];
 	};
 
-if (is_array($slug)) {
-	if ($slug[0] == "OVERRIDE") {
-		$slug = $slug[1];
-		} else {
+if ($SlugPrependPublisher_b) {
+	if ($slug == "") {
+		$slug = deriveSlug($publisher)."_".deriveSlug($title);
+		};
+	} else {
+	if ($slug == "") {
 		$slug = deriveSlug($title);
 		};
-} else {
-	$slug = deriveSlug($title);
-};
+	}
+
+if ($rights == "Public") {
+	$GeoServerWS = $GeoserverWorkspacePublic;
+	} else {
+	$GeoServerWS = $GeoserverWorkspaceRestricted;
+	}
 
 if (is_array($layerID)) {
 	if ($layerID[0] == "OVERRIDE") {
 		$layerID = $layerID[1];
 		};
 } else {
-	$layerID = $GeoServerWS.":".deriveSlug($title);
+	$layerID = $GeoServerWS.":".$slug;
 };
 
 if (is_array($identifier)) {
@@ -274,25 +292,27 @@ if (in_array($language, $engSynonyms)) {
 	$language = "eng";
 	};
 
+
 /* relations/geonames suggest logic */
 $geoIDstack = array();
 $subAddStack = array();
 
-$numRel = count($relation);
+$numPlace = count($spatialCoverage);
 
-for ($x = 0; $x < $numRel; $x++) {
-    $rel = $relation[$x];
+
+for ($x = 0; $x < $numPlace; $x++) {
+    $Place = $spatialCoverage[$x];
     
-    $RelColonPos = strpos($rel, ":");
-    $geonameID = substr($rel, 0, $RelColonPos);
+    $PlaceColonPos = strpos($Place, ":");
+    $geonameID = substr($Place, 0, $PlaceColonPos);
     array_push($geoIDstack, $geonameID);
     
-    $placenamelen = strlen($rel) - $RelColonPos - 2;
-    $placenameorig = substr($rel, $RelColonPos+2, $placenamelen);
+    $placenamelen = strlen($Place) - $PlaceColonPos - 2;
+    $placenameorig = substr($Place, $PlaceColonPos+2, $placenamelen);
     
-    $RelPar1 = strpos($rel, "(");
-    $RelPar2 = strpos($rel, ")");
-    $paren = substr($rel, $RelPar1 - 1, ($RelPar2 - $RelPar1 + 2));
+    $PlacePar1 = strpos($Place, "(");
+    $PlacePar2 = strpos($Place, ")");
+    $paren = substr($Place, $PlacePar1 - 1, ($PlacePar2 - $PlacePar1 + 2));
     $placenametrim = str_replace($paren, '', $placenameorig);
     
     $comma1 = strpos($placenametrim, ",");
@@ -329,7 +349,9 @@ for ($x = 0; $x < $numRel; $x++) {
 		
 		array_push($subAddStack, $printsub);
 };
+/* end rewrite */
 
+$spatialCoverage = array();
 $numSubAddStack = count($subAddStack);
 
 for ($x = 0; $x < $numSubAddStack; $x++) {
@@ -339,7 +361,7 @@ for ($x = 0; $x < $numSubAddStack; $x++) {
 
 $relation = array();
 
-for ($x = 0; $x < $numRel; $x++) {
+for ($x = 0; $x < $numPlace; $x++) {
     $link = "http://sws.geonames.org/".$geoIDstack[$x]."/about/rdf";
     array_push($relation, $link);
 }
@@ -378,30 +400,33 @@ if ($geoIDnum >= 1) {
     $res_west = $output_json['bbox']['west'];
     }
 };
+
 /*end geonames */
 
 /* references logic */
-if (strpos($UUID, ".net/") !== false) {
-	$UUIDNetPos = strpos($UUID, ".net/");
-	$UUIDNumBegin = $UUIDNetPos + 5;
-	$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
-	$repoFileNum = "2";
-	$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
-	$geoserverPublic = "http://geoserver.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
-	$geoserverRestricted = "http://geoserver-restricted.nyusdr.com:8080/geoserver/".$GeoServerWS."/";
+$geoserverPublic = $GeoserverEndpointPublic.$GeoServerWS."/";
+$geoserverRestricted = $GeoserverEndpointRestricted.$GeoServerWS."/";
+		
+if ($UUIDParsing_b) {
+	if (strpos($UUID, "handle.net/") !== false) {
+		$UUIDNetPos = strpos($UUID, ".net/");
+		$UUIDNumBegin = $UUIDNetPos + 5;
+		$UUID_uniq = substr($UUID, $UUIDNumBegin, strlen($UUID));
+		$repoFileNum = "2";
+		$downloadURL = "https://archive.nyu.edu/bitstream/".$UUID_uniq."/".$repoFileNum."/".$slug.".zip";
+	} else {
+		$repoFileNum = "9";
+		$downloadURL = "UUID IMPROPERLY PARSED: MAKE SURE TO USE HANDLE.NET OR DISABLE PARSING";
+		};
 } else {
-	$UUID_uniq = "NEED/UUID";
-	$repoFileNum = "9";
-	$downloadURL = "NEED UUID";
-	$geoserverPublic = "NEED UUID";
-	$geoserverRestricted = "NEED UUID";
-	};
+	
+	}
 	
 
 if ($rights == "Public") {
 	$WFS = $geoserverPublic."wfs";
 	$WMS = $geoserverPublic."wms";
-	} elseif ($rights == "Private") {
+	} elseif ($rights == "Restricted") {
 	$WFS = $geoserverRestricted."wfs";
 	$WMS = $geoserverRestricted."wms";
 	} else {
@@ -417,9 +442,11 @@ $references = array(
 "http://www.opengis.net/def/serviceType/ogc/wms" => $WMS,
 );
 */
-
-
+if ($UUIDParsing_b && $DirectDownloadLink_b) {
 $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/downloadUrl\":\"".$downloadURL."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
+} else {
+$references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://www.opengis.net/def/serviceType/ogc/wfs\":\"".$WFS."\",\"http://www.opengis.net/def/serviceType/ogc/wms\":\"".$WMS."\"}";
+}
 
 /* polygon parser logic */
 
@@ -427,6 +454,10 @@ $references = "{\"http://schema.org/url\":\"".$UUID."\",\"http://schema.org/down
 
 $numlocs = count($locDB);
 
+if (isset($spatialCoverage[0]) && $spatialCoverage[0] == "United States of America") {
+ 	$geoRSSBox = "-170.1769013405,24.7073204053,-64.5665435791,71.6032483233";
+ };
+$flag = false;
 if ($geoRSSBox !== "0,0,0,0") {
     /*
     for ($x = 0; $x < $numlocs; $x++) {
@@ -451,6 +482,7 @@ if ($geoRSSBox !== "0,0,0,0") {
     $S = substr($geoRSSBox, $posCom1 + 1, $Slen);
     $E = substr($geoRSSBox, $posCom2 + 1, $Elen);
     $N = substr($geoRSSBox, $posCom3 + 1, $Nlen);
+    $flag = true;
 } else {
     $N = 0;
     $S = 0;
@@ -458,11 +490,11 @@ if ($geoRSSBox !== "0,0,0,0") {
     $W = 0;
 }
 
-if ($res_north !== 0) {
+if ($res_north !== 0 && $flag == false) {
     $N = $res_north;
     $S = $res_south;
     $E = $res_east;
-    $W = $res_east;
+    $W = $res_west;
 } else {};
 
 $geoRSSBox = $S." ".$W." ".$N." ".$E;
@@ -504,26 +536,33 @@ $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].
 "solr_geom": <?php echo(json_encode($solrGeom)); ?>,
 "solr_year_i": <?php echo(json_encode(intval($solrYear))); ?>
 }<?php if ($itemSumInternal < $itemSum) { echo("],"); } else { echo("] \n }"); };?>
-<?php 
-$end_item_time = microtime(true);
-$item_time = $end_item_time - $begin_item_time;
-$runningtotal = $runningtotal + $item_time;
-$printed_item_time = "Item ".strval($itemSumInternal)."-- Total processing time (ms): ".($item_time * 1000)."\n\n";
-/*fwrite($log, $printed_search_time);
-fwrite($log, $printed_item_time);*/
-$email_report = $email_report.$printed_item_time;
+<?php
+if ($log_b) { 
+	$end_item_time = microtime(true);
+	$item_time = $end_item_time - $begin_item_time;
+	$runningtotal = $runningtotal + $item_time;
+	$printed_item_time = "Item ".strval($itemSumInternal)."-- Total processing time (ms): ".($item_time * 1000)."\n\n";
+	/* fwrite($log, $printed_search_time); */
+	fwrite($log, $printed_item_time);
+	$email_report = $email_report.$printed_item_time;
+}
 
 endforeach; 
-$entire_request_end = microtime(true);
-$entire_request_time = $entire_request_end - $entire_request_begin;
-$runTot_entire_diff = $entire_request_time - $runningtotal;
-$printed_request_time = "===============================================\nEntire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." seconds, with difference equaling ".($runTot_entire_diff*1000)." ms\n===============================================\n\n";
-/*fwrite($log, $printed_request_time);
-fclose($log);*/
+
+if ($log_b) {
+	$entire_request_end = microtime(true);
+	$entire_request_time = $entire_request_end - $entire_request_begin;
+	$runTot_entire_diff = $entire_request_time - $runningtotal;
+	$printed_request_time = "===============================================\nEntire query time: ".$entire_request_time." seconds, for ".strval($itemSumInternal)." items\nRunning total was ".$runningtotal." seconds, with difference equaling ".($runTot_entire_diff*1000)." ms\n===============================================\n\n";
+	fwrite($log, $printed_request_time);
+	fclose($log);
 /* mail report */
-$email_report = $email_report.$printed_request_time;
-$headers = 'From: sgbalogh@pretentiobot.org' . "\r\n" .
-    'Reply-To: me@me.net' . "\r\n" .
-    'X-Mailer: PHP/' . phpversion();
-/*mail($email_me, 'Export Report', $email_report, $headers);*/
+	if ($email_b) {
+		$email_report = $email_report.$printed_request_time;
+		$headers = 'From: ' . $from_email . "\r\n" .
+    	'Reply-To: me@me.net' . "\r\n" .
+    	'X-Mailer: PHP/' . phpversion();
+		mail($to_email, 'Export Report', $email_report, $headers);
+		}
+}
 ?>
