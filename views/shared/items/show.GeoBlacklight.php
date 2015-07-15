@@ -128,15 +128,15 @@ if (count($dateIssued) == 1) {
 	};*/
 
 if (count($temporalCoverage) == 1) {
-	$temporalCoverage = $temporalCoverage[0];
+	$temporalCoverage = array($temporalCoverage[0]);
 } elseif (count($temporalCoverage) == 0) {
-	$temporalCoverage = "";
+	$temporalCoverage = array();
 	};
 	
-if (strpos($temporalCoverage,'-')) {
-	$dashpos = strpos($temporalCoverage,'-');
-	$year1 = substr($temporalCoverage, 0, $dashpos);
-	$year2 = substr($temporalCoverage, $dashpos+1, strlen($temporalCoverage));
+if (strpos($temporalCoverage[0],'-')) {
+	$dashpos = strpos($temporalCoverage[0],'-');
+	$year1 = substr($temporalCoverage[0], 0, $dashpos);
+	$year2 = substr($temporalCoverage[0], $dashpos+1, strlen($temporalCoverage[0]));
 	$temporalCoverage = array($year1, $year2);
 }
 
