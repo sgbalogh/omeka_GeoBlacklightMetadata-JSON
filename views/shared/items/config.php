@@ -1,8 +1,8 @@
 <?php
 
 /*If set to true, records will all contain the Institution specified below for
-"dct_provenance_s"; if  */
-$HardCodeInstitution_b = true;
+"dct_provenance_s" */
+
 $DefaultInstitution_b = true;
 $Institution = "NYU";
 
@@ -40,5 +40,7 @@ $email_b = false;
 
 /* E-mail destination for analytic reports */
 $email_me = "me@domain.net";
+
+$HardCode_b = "test";
 
 ?>
