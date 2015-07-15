@@ -39,7 +39,7 @@
        NOTE: Only set this to true if you are using UUID parsing for NYU FDA identifiers!
        If you are not interested in this feature, you may as well turn off UUID parsing as well;
        this is the only advantage to having UUID parsing enabled, at least so far. */
-		$DirectDownloadLink = true;
+		$DirectDownloadLink_b = true;
 
 /* References Options */
 	/* Endpoint URLs for GeoServer and GeoServer workspace names */
