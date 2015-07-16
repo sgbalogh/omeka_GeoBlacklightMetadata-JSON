@@ -17,8 +17,8 @@
 	
 	/* Enter the WEB-ACCESSIBLE paths to the two necessary JS files,
 	and your GeoNames API username (please don't use mine!) */
-		$jeoQueryLoc = "http://52.1.104.201/js/jeoquery.js";
-		$LiveQueryLoc = "http://52.1.104.201/js/jquery.livequery.min.js";
+		$jeoQueryLoc = "http://submit.nyusdr.net/js/jeoquery.js";
+		$LiveQueryLoc = "http://submit.nyusdr.net/js/jquery.livequery.min.js";
 		$GeoNamesUserID = "sgbalogh";
 
 /* Slug Deriver Options */
@@ -43,8 +43,8 @@
 
 /* References Options */
 	/* Endpoint URLs for GeoServer and GeoServer workspace names */
-		$GeoserverEndpointPublic = "http://52.1.104.201:8080/geoserver/";
-		$GeoserverEndpointRestricted = "http://52.1.104.201:8080/geoserver/";
+		$GeoserverEndpointPublic = "http://maps-public.nyusdr.net/geoserver/";
+		$GeoserverEndpointRestricted = "http://maps-restricted.nyusdr.net/geoserver/";
 	/* GeoServer Workspace Names */
 		$GeoserverWorkspacePublic = "nyu_sdr";
 		$GeoserverWorkspaceRestricted = "nyu_sdr";
@@ -53,7 +53,7 @@
 
 /* THE FOLLOWING FIVE VARIABLES ONLY APPLY FOR BROWSE.PHP REQUESTS: */
 	/* Enable record production analytics for API requests handled by browse.php? */
-		$log_b = false;
+		$log_b = true;
 		
 		/* Location of log for record analytics */
 			$speedlog = "/var/www/html/logs/log.txt";
