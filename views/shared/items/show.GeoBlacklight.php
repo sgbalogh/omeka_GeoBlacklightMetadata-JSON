@@ -131,17 +131,20 @@ if (count($dateIssued) == 1) {
 	$dateIssued = "";
 	};*/
 
+
 if (count($temporalCoverage) == 1) {
 	$temporalCoverage = array($temporalCoverage[0]);
 } elseif (count($temporalCoverage) == 0) {
 	$temporalCoverage = array();
 	};
 	
+if (isset($temporalCoverage[0])) {	
 if (strpos($temporalCoverage[0],'-')) {
 	$dashpos = strpos($temporalCoverage[0],'-');
 	$year1 = substr($temporalCoverage[0], 0, $dashpos);
 	$year2 = substr($temporalCoverage[0], $dashpos+1, strlen($temporalCoverage[0]));
 	$temporalCoverage = array($year1, $year2);
+}
 }
 
 /*
@@ -221,17 +224,19 @@ if (count($solrGeom) == 1) {
 
 if (count($solrYear) == 1) {
 	$solrYear = $solrYear[0];
-} elseif (count($solrYear) == 0) {
+} elseif (count($solrYear) == 0 && isset($temporalCoverage[0])) {
 	$solrYear = $temporalCoverage[0];
+	} elseif (count($solrYear) == 0 && !isset($temporalCoverage[0])) {
+	$solrYear = 0;
 	};
 
 if ($SlugPrependPublisher_b) {
 	if ($slug == "") {
-		$slug = deriveSlug($publisher)."_".deriveSlug($title);
+		$slug = strtolower($provenance)."-".deriveSlug($publisher)."_".deriveSlug($title);
 		};
 	} else {
 	if ($slug == "") {
-		$slug = deriveSlug($title);
+		$slug = strtolower($provenance)."-".deriveSlug($title);
 		};
 	}
 

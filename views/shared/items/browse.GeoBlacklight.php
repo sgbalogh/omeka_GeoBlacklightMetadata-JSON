@@ -255,11 +255,11 @@ if (count($solrYear) == 1) {
 
 if ($SlugPrependPublisher_b) {
 	if ($slug == "") {
-		$slug = deriveSlug($publisher)."_".deriveSlug($title);
+		$slug = strtolower($provenance)."-".deriveSlug($publisher)."_".deriveSlug($title);
 		};
 	} else {
 	if ($slug == "") {
-		$slug = deriveSlug($title);
+		$slug = strtolower($provenance)."-".deriveSlug($title);
 		};
 	}
 
