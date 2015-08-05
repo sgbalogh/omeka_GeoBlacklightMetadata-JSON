@@ -7,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  */
 
+
 class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 {
 
@@ -77,15 +78,16 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     public function  hookAdminHead($args) {
-  queue_js_url('http://52.1.104.201/js/jeoquery.js');
-  queue_js_url('http://52.1.104.201/js/jquery.livequery.min.js');
-  queue_js_string("
+  include 'views/shared/items/config.php';
+  queue_js_url($jeoQueryLoc);
+  queue_js_url($LiveQueryLoc);
+  $jsString = "
   
 
   
   				jQuery(function($) {
   				
-                jeoquery.defaultData.userName = 'sgbalogh';
+                jeoquery.defaultData.userName = '".$GeoNamesUserID."';
             
                 $(\"#Elements-81-0-text\").jeoCityAutoComplete({callback: function(city) { if (console) console.log(city);}});  
                 
@@ -113,7 +115,11 @@ class GeoBlacklightMetadataPlugin extends Omeka_Plugin_AbstractPlugin
 });
                 	
             });
-");
+";
+
+queue_js_string($jsString);
+
+
       }
 
     /**
