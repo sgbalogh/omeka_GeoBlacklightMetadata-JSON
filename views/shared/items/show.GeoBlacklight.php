@@ -4,7 +4,7 @@ include 'location_DB.php';
 include 'config.php';
 
 function deriveSlug ($string) {
-    $junkWords = array("for ","in "," on ","the "," a "," A ","A "," an "," use ","with"," of ");
+    $junkWords = array("for ","in "," on","the "," a "," A ","A "," an "," use ","with"," of ");
     $lessjunk = str_replace($junkWords, '', $string);
 	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $lessjunk);
 	$flatten = preg_replace('/\s+/', '', $clean);
