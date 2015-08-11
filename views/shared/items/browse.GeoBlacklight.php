@@ -14,7 +14,7 @@ if ($log_b) {
 };
 
 function deriveSlug ($string) {
-    $junkWords = array("for ","in "," on","the "," a "," A ","A "," an "," use ","with"," of ");
+    $junkWords = array("for ","in "," on","the "," a "," A ","A "," an "," and "," use ","with"," of ");
     $lessjunk = str_replace($junkWords, '', $string);
 	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $lessjunk);
 	$flatten = preg_replace('/\s+/', '', $clean);
@@ -274,7 +274,7 @@ if (is_array($layerID)) {
 		$layerID = $layerID[1];
 		};
 } else {
-	$layerID = $GeoServerWS.":".$slug;
+	$layerID = strtolower($GeoServerWS.":".$slug);
 };
 
 if (is_array($identifier)) {
@@ -456,7 +456,10 @@ $numlocs = count($locDB);
 
 if (isset($spatialCoverage[0]) && $spatialCoverage[0] == "United States of America") {
  	$geoRSSBox = "-170.1769013405,24.7073204053,-64.5665435791,71.6032483233";
- };
+ } elseif (isset($spatialCoverage[0]) && ($spatialCoverage[0] == "World" || $spatialCoverage[0] == "Earth")) {
+ 	$geoRSSBox = "-180,-90,180,90";
+ }
+ 
 $flag = false;
 if ($geoRSSBox !== "0,0,0,0") {
     /*
