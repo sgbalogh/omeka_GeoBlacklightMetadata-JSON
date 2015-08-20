@@ -24,7 +24,7 @@
 /* Slug Deriver Options */
 	/* Automatically prepend slug with the slugified publisher name?
 	   e.g.: WorldAdministrativeUnits --> ESRI_WorldAdministrativeUnits */
-		$SlugPrependPublisher_b = true;
+		$SlugPrependPublisher_b = false;
 		
 /* UUID Parsing Options */
 
