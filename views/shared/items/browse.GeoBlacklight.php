@@ -14,7 +14,7 @@ if ($log_b) {
 };
 
 function deriveSlug ($string) {
-    $junkWords = array("for ","in "," on","the "," a "," A ","A "," an "," and "," use ","with"," of ");
+    $junkWords = array("for "," in "," on","the "," a "," A ","A "," an "," and "," use ","with"," of ");
     $lessjunk = str_replace($junkWords, '', $string);
 	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $lessjunk);
 	$flatten = preg_replace('/\s+/', '', $clean);
@@ -133,11 +133,11 @@ if (count($type) == 1) {
 	$type = "";
 	};*/
 
-if (count($publisher) == 1) {
+/*if (count($publisher) == 1) {
 	$publisher = $publisher[0];
 } elseif (count($publisher) == 0) {
 	$publisher = "Unknown";
-	};
+	};*/
 
 if (count($creator) == 1) {
 	$creator = $creator[0];
@@ -253,8 +253,9 @@ if (count($solrYear) == 1) {
 	$solrYear = $temporalCoverage[0];
 	};
 
-if ($SlugPrependPublisher_b) {
+if ($SlugPrependPublisher_b && isset($publisher[0])) {
 	if ($slug == "") {
+		$publisher = $publisher[0];
 		$slug = strtolower($provenance)."-".deriveSlug($publisher)."_".deriveSlug($title);
 		};
 	} else {
