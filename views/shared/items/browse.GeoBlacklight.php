@@ -13,12 +13,18 @@ if ($log_b) {
 	$email_report = $begin_statement;
 };
 
-function deriveSlug ($string) {
-    $junkWords = array("for "," in "," on","the "," a "," A ","A "," an "," and "," use ","with"," of ");
-    $lessjunk = str_replace($junkWords, '', $string);
-	$clean = preg_replace('/[^a-zA-Z0-9\/_|+ -]/', '', $lessjunk);
-	$flatten = preg_replace('/\s+/', '', $clean);
-	return $flatten;
+function deriveSlug ($UUIDfull) {
+
+  if (strpos($UUIDfull, "handle.net/") !== false) {
+    $UUIDNetPos = strpos($UUIDfull, ".net/");
+    $UUIDNumBegin = $UUIDNetPos + 5;
+    $UUID_uniq = substr($UUIDfull, $UUIDNumBegin, strlen($UUIDfull));
+
+    $string = str_replace("/", "_", $UUID_uniq);
+  } else {
+    $string = "UNABLE_TO_DERIVE_FROM_UUID";
+  };
+	return $string;
 	};
 
 $itemSum = 0;
@@ -30,7 +36,7 @@ endforeach;
 
 $itemSumInternal = 0;
 echo("{");
-foreach(loop('items') as $item): 
+foreach(loop('items') as $item):
 
 $begin_item_time = microtime(true);
 
@@ -164,7 +170,7 @@ if (count($temporalCoverage) == 1) {
 } elseif (count($temporalCoverage) == 0) {
 	$temporalCoverage = array();
 	};
-	
+
 if (strpos($temporalCoverage[0],'-')) {
 	$dashpos = strpos($temporalCoverage[0],'-');
 	$year1 = substr($temporalCoverage[0], 0, $dashpos);
@@ -256,11 +262,11 @@ if (count($solrYear) == 1) {
 if ($SlugPrependPublisher_b && isset($publisher[0])) {
 	if ($slug == "") {
 		$publisher = $publisher[0];
-		$slug = strtolower($provenance)."-".deriveSlug($publisher)."_".deriveSlug($title);
+		$slug = strtolower($provenance)."_".deriveSlug($UUID);
 		};
 	} else {
 	if ($slug == "") {
-		$slug = strtolower($provenance)."-".deriveSlug($title);
+		$slug = strtolower($provenance)."_".deriveSlug($UUID);
 		};
 	}
 
@@ -303,19 +309,19 @@ $numPlace = count($spatialCoverage);
 
 for ($x = 0; $x < $numPlace; $x++) {
     $Place = $spatialCoverage[$x];
-    
+
     $PlaceColonPos = strpos($Place, ":");
     $geonameID = substr($Place, 0, $PlaceColonPos);
     array_push($geoIDstack, $geonameID);
-    
+
     $placenamelen = strlen($Place) - $PlaceColonPos - 2;
     $placenameorig = substr($Place, $PlaceColonPos+2, $placenamelen);
-    
+
     $PlacePar1 = strpos($Place, "(");
     $PlacePar2 = strpos($Place, ")");
     $paren = substr($Place, $PlacePar1 - 1, ($PlacePar2 - $PlacePar1 + 2));
     $placenametrim = str_replace($paren, '', $placenameorig);
-    
+
     $comma1 = strpos($placenametrim, ",");
     $loc1 = substr($placenametrim, 0, $comma1);
     $comma2 = strpos($placenametrim, ",", $comma1 + 1);
@@ -346,8 +352,8 @@ for ($x = 0; $x < $numPlace; $x++) {
     			}
     		}
     	}
-     
-		
+
+
 		array_push($subAddStack, $printsub);
 };
 /* end rewrite */
@@ -407,7 +413,7 @@ if ($geoIDnum >= 1) {
 /* references logic */
 $geoserverPublic = $GeoserverEndpointPublic.$GeoServerWS."/";
 $geoserverRestricted = $GeoserverEndpointRestricted.$GeoServerWS."/";
-		
+
 if ($UUIDParsing_b) {
 	if (strpos($UUID, "handle.net/") !== false) {
 		$UUIDNetPos = strpos($UUID, ".net/");
@@ -420,9 +426,9 @@ if ($UUIDParsing_b) {
 		$downloadURL = "UUID IMPROPERLY PARSED: MAKE SURE TO USE HANDLE.NET OR DISABLE PARSING";
 		};
 } else {
-	
+
 	}
-	
+
 
 if ($rights == "Public") {
 	$WFS = $geoserverPublic."wfs";
@@ -460,7 +466,7 @@ if (isset($spatialCoverage[0]) && $spatialCoverage[0] == "United States of Ameri
  } elseif (isset($spatialCoverage[0]) && ($spatialCoverage[0] == "World" || $spatialCoverage[0] == "Earth")) {
  	$geoRSSBox = "-180,-90,180,90";
  }
- 
+
 $flag = false;
 if ($geoRSSBox !== "0,0,0,0") {
     /*
@@ -541,7 +547,7 @@ $layerModDate = $CDT['year']."-".$CDT['mon']."-".$CDT['mday']."T".$CDT['hours'].
 "solr_year_i": <?php echo(json_encode(intval($solrYear))); ?>
 }<?php if ($itemSumInternal < $itemSum) { echo("],"); } else { echo("] \n }"); };?>
 <?php
-if ($log_b) { 
+if ($log_b) {
 	$end_item_time = microtime(true);
 	$item_time = $end_item_time - $begin_item_time;
 	$runningtotal = $runningtotal + $item_time;
@@ -551,7 +557,7 @@ if ($log_b) {
 	$email_report = $email_report.$printed_item_time;
 }
 
-endforeach; 
+endforeach;
 
 if ($log_b) {
 	$entire_request_end = microtime(true);
