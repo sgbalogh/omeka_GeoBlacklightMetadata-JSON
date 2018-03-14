@@ -10,7 +10,7 @@ function deriveSlug ($UUIDfull) {
     $UUIDNumBegin = $UUIDNetPos + 5;
     $UUID_uniq = substr($UUIDfull, $UUIDNumBegin, strlen($UUIDfull));
 
-    $string = "hdl_".str_replace("/", "_", $UUID_uniq);
+    $string = "hdl-".str_replace("/", "-", $UUID_uniq);
   } else {
     $string = "UNABLE_TO_DERIVE_FROM_UUID";
   };
